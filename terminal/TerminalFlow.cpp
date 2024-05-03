@@ -1,17 +1,138 @@
 #include <iostream>
 #include "TerminalFlow.h"
 
+
+static TSPGraph TGraphTourism,TGraphStadiums,TGraphShipping,RWGraph1, RWGraph2, RWGraph3, EFCGraph25, EFCGraph50, EFCGraph75, EFCGraph100, EFCGraph200, EFCGraph300,
+EFCGraph400, EFCGraph500, EFCGraph600, EFCGraph700, EFCGraph800, EFCGraph900;
+
+
+
 using namespace std;
 
-void TerminalFlow::call(WaterSupply &ws) {
+void TerminalFlow::call(TSPGraph& graph) {
     cout << endl;
     cout << "Welcome to our Routing Management System" << endl;
     cout << "---------------------------------------------" << endl;
-    getReadDataMenu(ws);
-    mainMenu(ws);
+    cout << "Parsing files... Please wait.";
+    loadGraphs();
+    cout << '\r';   // this should delete the loading line but doesn't...
+    chooseGraph(graph);
+    mainMenu(graph);
 }
 
-void TerminalFlow::mainMenu(WaterSupply &ws) {
+void TerminalFlow::chooseGraph(TSPGraph &graph) {
+    cout << "Please choose a graph type of the following:" << endl;
+    cout << "1. Toy graphs" << endl;
+    cout << "2. Extra fully connected graphs" << endl;
+    cout << "3. Real world graphs" << endl;
+    int selected, selected2;
+    cin >> selected;
+    switch (selected) {
+        case 1 :
+            cout << "Please choose a toy graph of the following:" << endl;
+            cout << "1. Shipping" << endl;
+            cout << "2. Stadiums" << endl;
+            cout << "3. Tourism" << endl;
+            cin >> selected2;
+            switch (selected2) {
+                case 1 :
+                    graph = TGraphShipping;
+                    break;
+                case 2 :
+                    graph = TGraphStadiums;
+                    break;
+                case 3 :
+                    graph = TGraphTourism;
+                    break;
+                default:
+                    cout << "Invalid choice. Please try again." << endl;
+                    chooseGraph(graph);
+            }
+        case 2 :
+            cout << "Please choose a fully connected graph of the following:" << endl;
+            cout << "1. 25 Node Graph " << endl;
+            cout << "2. 50 Node Graph " << endl;
+            cout << "3. 75 Node Graph " << endl;
+            cout << "4. 100 Node Graph " << endl;
+            cout << "5. 200 Node Graph " << endl;
+            cout << "6. 300 Node Graph " << endl;
+            cout << "7. 400 Node Graph " << endl;
+            cout << "8. 500 Node Graph " << endl;
+            cout << "9. 600 Node Graph " << endl;
+            cout << "10. 700 Node Graph " << endl;
+            cout << "11. 800 Node Graph " << endl;
+            cout << "12. 900 Node Graph " << endl;
+            cin >> selected2;
+            switch (selected2) {
+                case 1 :
+                    graph = EFCGraph25;
+                    break;
+                case 2 :
+                    graph = EFCGraph50;
+                    break;
+                case 3 :
+                    graph = EFCGraph75;
+                    break;
+                case 4 :
+                    graph = EFCGraph100;
+                    break;
+                case 5 :
+                    graph = EFCGraph200;
+                    break;
+                case 6 :
+                    graph = EFCGraph300;
+                    break;
+                case 7 :
+                    graph = EFCGraph400;
+                    break;
+                case 8 :
+                    graph = EFCGraph500;
+                    break;
+                case 9 :
+                    graph = EFCGraph600;
+                    break;
+                case 10 :
+                    graph = EFCGraph700;
+                    break;
+                case 11 :
+                    graph = EFCGraph800;
+                    break;
+                case 12 :
+                    graph = EFCGraph900;
+                    break;
+                default:
+                    cout << "Invalid choice. Please try again." << endl;
+                    chooseGraph(graph);
+            }
+            break;
+        case 3 :
+            cout << "Please choose a real world graph of the following:" << endl;
+            cout << "1. Graph 1" << endl;
+            cout << "2. Graph 2" << endl;
+            cout << "3. Graph 3" << endl;
+            cin >> selected2;
+            switch (selected2) {
+                case 1 :
+                    graph = RWGraph1;
+                    break;
+                case 2 :
+                    graph = RWGraph2;
+                    break;
+                case 3 :
+                    graph = RWGraph3;
+                    break;
+                default:
+                    cout << "Invalid choice. Please try again." << endl;
+                    chooseGraph(graph);
+            }
+        default:
+            cout << "Invalid choice. Please try again." << endl;
+            chooseGraph(graph);
+    }
+    cout << "Graph has been chosen correctly" << endl;
+}
+
+void TerminalFlow::mainMenu(TSPGraph& graph) {
     cout << endl;
     cout << "Please choose a functionality of the following:" << endl;
     cout << "---------------------------------------------" << endl;
@@ -28,160 +149,49 @@ void TerminalFlow::mainMenu(WaterSupply &ws) {
 
     switch (selected) {
         case 1 :
-            cout << Functionality::backtracking(ws) << endl;
-            mainMenu(ws);
+            cout << "Functionality::backtracking(graph)" << endl;
+            mainMenu(graph);
             break;
         case 2 :
-            cout << Functionality::triangularInequality(ws) << endl;
-            mainMenu(ws);
+            cout << "Functionality::triangularInequality(graph)" << endl;
+            mainMenu(graph);
             break;
         case 3 :
-            cout << Functionality::otherHeuristic(ws) << endl;
-            mainMenu(ws);
+            cout << "Functionality::otherHeuristic(graph)" << endl;
+            mainMenu(graph);
             break;
         case 4 :
-            cout << Functionality::notFullyConnected(ws) << endl;
-            mainMenu(ws);
+            cout << "Functionality::notFullyConnected(graph)" << endl;
+            mainMenu(graph);
             break;
         case 5 :
             exit(0);
         default:
             cout << "Invalid choice. Please try again." << endl;
-            mainMenu(ws);
+            mainMenu(graph);
     }
 }
-
-/*
-
-void TerminalFlow::printPipeLoad(WaterSupply& ws) {
-    vector<double> diffVector;
-    cout << "Current Network / Pipe Load:" << endl;
-    for(auto node : ws.getNodeSet()){
-        if(node->getInfo() == "master_source" || node->getInfo() == "master_sink")
-            continue;
-
-        if(node->getAdj().empty())
-            continue;
-
-        if(node->getAdj().size() == 1 && node->getAdj()[0]->getDest()->getInfo() == "master_sink")
-            continue;
-
-        cout << "From node " << node->getInfo() << ":" << endl;
-        for(auto pipe : node->getAdj()){
-            if(pipe->getDest()->getInfo() == "master_sink")
-                continue;
-
-            diffVector.push_back(pipe->getWeight()-pipe->getFlow());
-            cout << "- to " << pipe->getDest()->getInfo() << " (" << to_string(int(pipe->getFlow())) << "/" << to_string(int(pipe->getWeight())) <<")" << endl;
-        }
-    }
-    cout << endl;
-    vector<double> balanceStats = ws.getNetworkBalanceStats();
-    cout << "Average flow: " << balanceStats[0] << endl;
-    cout << "Std Dev of flow: " << balanceStats[1] << endl;
-    cout << "Total flow: " << balanceStats[2] << endl;
-    cout << endl;
+void TerminalFlow::loadGraphs() {
+    FileReader::loadGraph("../files/Toy-Graphs/shipping.csv",TGraphShipping);
+    FileReader::loadGraph("../files/Toy-Graphs/stadiums.csv",TGraphStadiums);
+    FileReader::loadGraph("../files/Toy-Graphs/tourism.csv",TGraphTourism);
+    FileReader::loadGraph("../files/Real-world-Graphs/graph1/edges.csv","../files/Real-world-Graphs/graph1/nodes.csv",RWGraph1);
+    //FileReader::loadGraph("../files/Real-world-Graphs/graph2/edges.csv","../files/Real-world-Graphs/graph2/nodes.csv",RWGraph2); takes 1~min to load
+    //FileReader::loadGraph("../files/Real-world-Graphs/graph3/edges.csv","../files/Real-world-Graphs/graph3/nodes.csv",RWGraph3); takes 10+min to load
+    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_25.csv","../files/Extra-Fully-Connected-Graphs/nodes.csv",EFCGraph25);
+    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_50.csv","../files/Extra-Fully-Connected-Graphs/nodes.csv",EFCGraph50);
+    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_75.csv","../files/Extra-Fully-Connected-Graphs/nodes.csv",EFCGraph75);
+    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_100.csv","../files/Extra-Fully-Connected-Graphs/nodes.csv",EFCGraph100);
+    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_200.csv","../files/Extra-Fully-Connected-Graphs/nodes.csv",EFCGraph200);
+    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_300.csv","../files/Extra-Fully-Connected-Graphs/nodes.csv",EFCGraph300);
+    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_400.csv","../files/Extra-Fully-Connected-Graphs/nodes.csv",EFCGraph400);
+    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_500.csv","../files/Extra-Fully-Connected-Graphs/nodes.csv",EFCGraph500);
+    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_600.csv","../files/Extra-Fully-Connected-Graphs/nodes.csv",EFCGraph600);
+    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_700.csv","../files/Extra-Fully-Connected-Graphs/nodes.csv",EFCGraph700);
+    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_800.csv","../files/Extra-Fully-Connected-Graphs/nodes.csv",EFCGraph800);
+    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_900.csv","../files/Extra-Fully-Connected-Graphs/nodes.csv",EFCGraph900);
 }
 
-string TerminalFlow::getValidCityCode(WaterSupply &ws) {
-    string cityCode;
-    while (true) {
-        cout << "Insert a city code: (eg: C_1)" << endl;
-        getline(cin, cityCode);
-        if (ws.findNode(cityCode) != nullptr)
-            break;
-
-        cout << "You wrote an invalid input or city not found." << endl;
-        cout << "Example of a valid input: C_2" << endl;
-        cout << endl;
-    }
-
-    return cityCode;
-}
-
-string TerminalFlow::getValidReservoirCode(WaterSupply &ws) {
-    string reservoirCode;
-    while (true) {
-        cout << "Insert a reservoir code: (eg: R_1)" << endl;
-        getline(cin, reservoirCode);
-        if (ws.findNode(reservoirCode) != nullptr)
-            break;
-
-        cout << "You wrote an invalid input or reservoir not found." << endl;
-        cout << "Example of a valid input: R_2" << endl;
-        cout << endl;
-    }
-
-    return reservoirCode;
-}
-
-void TerminalFlow::printVector(const vector<string> &resultVector) {
-    for (const string &s: resultVector) {
-        cout << s << endl;
-    }
-}
-
-*/
-
-void TerminalFlow::getReadDataMenu(WaterSupply &ws) {
-    cout << "Please choose a graph type of the following:" << endl;
-    cout << "1. Toy graphs" << endl;
-    cout << "2. Extra fully connected graphs" << endl;
-    cout << "3. Real world graphs" << endl;
-    int selected, selected2;
-    cin >> selected;
-    string edges_file_path = "";
-    switch (selected) {
-        case 1 :
-            cout << "Please choose a toy graph of the following:" << endl;
-            cout << "1. Shipping" << endl;
-            cout << "2. Stadiums" << endl;
-            cout << "3. Tourism" << endl;
-            cin >> selected2;
-            switch (selected2) {
-                case 1 :
-                    edges_file_path = "../files/Toy-Graphs/shipping.csv";
-                    break;
-                case 2 :
-                    edges_file_path = "../files/Toy-Graphs/stadiums.csv";
-                    break;
-                case 3 :
-                    edges_file_path = "../files/Toy-Graphs/tourism.csv";
-                    break;
-                default:
-                    cout << "Invalid choice. Please try again." << endl;
-                    getReadDataMenu(ws);
-            }
-        case 2 :
-            edges_file_path = "../files/Extra-Fully-Connected-Graphs/edges_25.csv";
-            break;
-        case 3 :
-            cout << "Please choose a real world graph of the following:" << endl;
-            cout << "1. Graph 1" << endl;
-            cout << "2. Graph 2" << endl;
-            cout << "3. Graph 3" << endl;
-            cin >> selected2;
-            switch (selected2) {
-                case 1 :
-                    edges_file_path = "../files/Real-world-Graphs/graph1/edges.csv";
-                    break;
-                case 2 :
-                    edges_file_path = "../files/Real-world-Graphs/graph2/edges.csv";;
-                    break;
-                case 3 :
-                    edges_file_path = "../files/Real-world-Graphs/graph3/edges.csv";
-                    break;
-                default:
-                    cout << "Invalid choice. Please try again." << endl;
-                    getReadDataMenu(ws);
-            }
-        default:
-            cout << "Invalid choice. Please try again." << endl;
-            getReadDataMenu(ws);
-    }
-    FileReader::addPipes(edges_file_path, ws);
-    cout << "Files have been read correctly" << endl;
-}
 
 
 

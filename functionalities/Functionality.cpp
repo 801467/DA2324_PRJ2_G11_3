@@ -2,8 +2,8 @@
 
 #include <sstream>
 #include "Functionality.h"
-
-void backtracking(WaterSupply& graph){
+/*
+void backtracking(TSPGraph& graph){
 
 }
 
@@ -17,4 +17,4 @@ void otherHeuristic(WaterSupply& graph){
 
 void notFullyConnected(WaterSupply& graph){
     
-}
+}*/
