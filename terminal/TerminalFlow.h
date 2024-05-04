@@ -13,6 +13,9 @@ public:
     static void chooseGraph(TSPGraph& graph);
 private:
     static void loadGraphs();
+    static void chooseToyGraph(TSPGraph& graph);
+    static void chooseFullyConnectedGraph(TSPGraph& graph);
+    static void chooseRealWorldGraph(TSPGraph& graph);
 
 };
 
