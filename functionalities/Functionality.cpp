@@ -45,15 +45,20 @@ void Functionality::tspBacktracking(TSPGraph &graph, vector<bool> &visitedVector
                     graph.setMinCost(currCost);
                     graph.setMinPath(*currPath);
                 }
-
-                return;
             }
         }
+        return;
     }
 
     // Backtracking Part
     // Loop equally through adjacent nodes
     for (auto adj: currNode->getAdj()) {
+        // branch filtering based on cost
+        double currCost = cost + adj->getWeight();
+        if(currCost >= graph.getMinCost()){
+            continue;
+        }
+
         int destId = adj->getDest()->getInfo();
         // if not visited
         if (!visitedVector[destId]) {
