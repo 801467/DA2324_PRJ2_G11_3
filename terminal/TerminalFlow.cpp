@@ -1,11 +1,6 @@
 #include <iostream>
 #include "TerminalFlow.h"
 
-
-static TSPGraph TGraphTourism, TGraphStadiums, TGraphShipping, RWGraph1, RWGraph2, RWGraph3, EFCGraph25, EFCGraph50, EFCGraph75, EFCGraph100, EFCGraph200, EFCGraph300,
-        EFCGraph400, EFCGraph500, EFCGraph600, EFCGraph700, EFCGraph800, EFCGraph900;
-
-
 using namespace std;
 
 void TerminalFlow::call(TSPGraph &graph) {
@@ -14,7 +9,7 @@ void TerminalFlow::call(TSPGraph &graph) {
     cout << "---------------------------------------------" << endl;
     cout << endl;
     chooseGraph(graph);
-    mainMenu(graph);
+    runFunctionality(graph);
 }
 
 void TerminalFlow::chooseGraph(TSPGraph &graph) {
@@ -40,6 +35,52 @@ void TerminalFlow::chooseGraph(TSPGraph &graph) {
     }
     cout << "Graph has been loaded correctly" << endl;
 }
+
+void TerminalFlow::runFunctionality(TSPGraph &graph) {
+    cout << endl;
+    cout << "Please choose a functionality of the following:" << endl;
+    cout << "---------------------------------------------" << endl;
+    cout << "1. Backtracking algorithm for TSP" << endl;
+    cout << "2. Approximation algorithm for TSP with triangular inequality" << endl;
+    cout << "3. Approximation algorithm for TSP with another heuristic" << endl;
+    cout << "4. Approximation algorithm for TSP when not fully connected" << endl;
+    cout << "5. Exit" << endl;
+
+    int selected;
+    cin >> selected;
+    cin.ignore(9999999, '\n'); // always clean cin (to avoid issue with getline)
+    cout << endl;
+
+    chrono::time_point<chrono::system_clock> start;
+
+    switch (selected) {
+        case 1 :
+            start = chrono::system_clock::now();
+            Functionality::backtracking(graph);
+            printTimeLapsed(start);
+            runFunctionality(graph);
+            break;
+        case 2 :
+            cout << "Functionality::triangularInequality(graph)" << endl;
+            runFunctionality(graph);
+            break;
+        case 3 :
+            cout << "Functionality::otherHeuristic(graph)" << endl;
+            runFunctionality(graph);
+            break;
+        case 4 :
+            cout << "Functionality::notFullyConnected(graph)" << endl;
+            runFunctionality(graph);
+            break;
+        case 5 :
+            exit(0);
+        default:
+            cout << "Invalid choice. Please try again." << endl;
+            runFunctionality(graph);
+    }
+}
+
+// private
 
 void TerminalFlow::chooseToyGraph(TSPGraph &graph) {
     cout << "Please choose a toy graph of the following:" << endl;
@@ -149,46 +190,6 @@ void TerminalFlow::chooseRealWorldGraph(TSPGraph &graph) {
     }
 }
 
-void TerminalFlow::mainMenu(TSPGraph &graph) {
-    cout << endl;
-    cout << "Please choose a functionality of the following:" << endl;
-    cout << "---------------------------------------------" << endl;
-    cout << "1. Backtracking algorithm for TSP" << endl;
-    cout << "2. Approximation algorithm for TSP with triangular inequality" << endl;
-    cout << "3. Approximation algorithm for TSP with another heuristic" << endl;
-    cout << "4. Approximation algorithm for TSP when not fully connected" << endl;
-    cout << "5. Exit" << endl;
-
-    int selected;
-    cin >> selected;
-    cin.ignore(9999999, '\n'); // always clean cin (to avoid issue with getline)
-    cout << endl;
-
-    switch (selected) {
-        case 1 :
-            cout << "Functionality::backtracking(graph)" << endl;
-            mainMenu(graph);
-            break;
-        case 2 :
-            cout << "Functionality::triangularInequality(graph)" << endl;
-            mainMenu(graph);
-            break;
-        case 3 :
-            cout << "Functionality::otherHeuristic(graph)" << endl;
-            mainMenu(graph);
-            break;
-        case 4 :
-            cout << "Functionality::notFullyConnected(graph)" << endl;
-            mainMenu(graph);
-            break;
-        case 5 :
-            exit(0);
-        default:
-            cout << "Invalid choice. Please try again." << endl;
-            mainMenu(graph);
-    }
-}
-
 void TerminalFlow::loadGraph(const std::string &chosenGraph, TSPGraph &graph) {
     if (chosenGraph == "TGraphShipping")
         FileReader::loadGraph("../files/Toy-Graphs/shipping.csv", graph);
@@ -201,8 +202,7 @@ void TerminalFlow::loadGraph(const std::string &chosenGraph, TSPGraph &graph) {
         FileReader::loadGraph("../files/Real-world-Graphs/graph1/edges.csv",
                               "../files/Real-world-Graphs/graph1/nodes.csv",
                               graph);
-    }
-    else if (chosenGraph == "RWGraph2") {
+    } else if (chosenGraph == "RWGraph2") {
         cout << "Takes ~5 min to load. Please wait..." << endl;
         FileReader::loadGraph("../files/Real-world-Graphs/graph2/edges.csv",
                               "../files/Real-world-Graphs/graph2/nodes.csv", graph);
@@ -251,5 +251,16 @@ void TerminalFlow::loadGraph(const std::string &chosenGraph, TSPGraph &graph) {
 }
 
 
+void TerminalFlow::printTimeLapsed(const chrono::time_point<chrono::system_clock> &start) {
+    auto end = chrono::system_clock::now();
 
+    chrono::duration<double> elapsed_seconds = end - start;
 
+    std::time_t start_time = chrono::system_clock::to_time_t(start);
+    std::time_t end_time = chrono::system_clock::to_time_t(end);
+
+    cout << "Started algorithm at " << ctime(&start_time)
+         << "Finished algorithm at " << ctime(&end_time)
+         << "Elapsed time: " << elapsed_seconds.count() << "s"
+         << endl;
+}

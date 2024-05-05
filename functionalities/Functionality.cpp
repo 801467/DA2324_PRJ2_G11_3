@@ -1,12 +1,10 @@
-// Implement the functionalities here
-
-#include <sstream>
 #include "Functionality.h"
-/*
-void backtracking(TSPGraph& graph){
 
+void Functionality::backtracking(TSPGraph& graph){
+    cout << "ran Backtracking..." << endl;
 }
 
+/*
 void triangularInequality(WaterSupply& graph){
 
 }
