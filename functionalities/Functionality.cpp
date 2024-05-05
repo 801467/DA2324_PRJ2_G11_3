@@ -26,7 +26,7 @@ void Functionality::backtracking(TSPGraph &graph) {
 
     cout << "Min Cost: " << graph.getMinCost() << endl;
     cout << "Min Path: ";
-    for (auto element : graph.getMinPath()) {
+    for (auto element: graph.getMinPath()) {
         cout << element << " ";
     }
     cout << endl << endl;
@@ -41,7 +41,7 @@ void Functionality::tspBacktracking(TSPGraph &graph, vector<bool> &visitedVector
             if (adj->getDest() == graph.getOrigin()) {
                 // check if cost is less than previously found
                 double currCost = cost + adj->getWeight();
-                if(graph.getMinCost() > currCost){
+                if (graph.getMinCost() > currCost) {
                     graph.setMinCost(currCost);
                     graph.setMinPath(*currPath);
                 }
@@ -54,8 +54,7 @@ void Functionality::tspBacktracking(TSPGraph &graph, vector<bool> &visitedVector
     // Loop equally through adjacent nodes
     for (auto adj: currNode->getAdj()) {
         // branch filtering based on cost
-        double currCost = cost + adj->getWeight();
-        if(currCost >= graph.getMinCost()){
+        if (cost + adj->getWeight() >= graph.getMinCost()) {
             continue;
         }
 
