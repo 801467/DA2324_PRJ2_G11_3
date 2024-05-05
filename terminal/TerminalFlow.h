@@ -8,14 +8,15 @@
 
 class TerminalFlow {
 public:
-    static void call(TSPGraph& graph);
-    static void mainMenu(TSPGraph& graph);
-    static void chooseGraph(TSPGraph& graph);
+    static void call(TSPGraph &graph);
+    static void mainMenu(TSPGraph &graph);
+    static void chooseGraph(TSPGraph &graph);
+
 private:
-    static void loadGraphs();
-    static void chooseToyGraph(TSPGraph& graph);
-    static void chooseFullyConnectedGraph(TSPGraph& graph);
-    static void chooseRealWorldGraph(TSPGraph& graph);
+    static void loadGraph(const std::string &chosenGraph, TSPGraph &graph);
+    static void chooseToyGraph(TSPGraph &graph);
+    static void chooseFullyConnectedGraph(TSPGraph &graph);
+    static void chooseRealWorldGraph(TSPGraph &graph);
 
 };
 

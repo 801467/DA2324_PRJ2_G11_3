@@ -12,9 +12,7 @@ void TerminalFlow::call(TSPGraph &graph) {
     cout << endl;
     cout << "Welcome to our Routing Management System" << endl;
     cout << "---------------------------------------------" << endl;
-    cout << "Parsing files... Please wait.";
-    loadGraphs();
-    cout << '\r';   // this should delete the loading line but doesn't...
+    cout << endl;
     chooseGraph(graph);
     mainMenu(graph);
 }
@@ -24,7 +22,7 @@ void TerminalFlow::chooseGraph(TSPGraph &graph) {
     cout << "1. Toy graphs" << endl;
     cout << "2. Extra fully connected graphs" << endl;
     cout << "3. Real world graphs" << endl;
-    int selected, selected2;
+    int selected;
     cin >> selected;
     switch (selected) {
         case 1 :
@@ -40,7 +38,7 @@ void TerminalFlow::chooseGraph(TSPGraph &graph) {
             cout << "Invalid choice. Please try again." << endl;
             chooseGraph(graph);
     }
-    cout << "Graph has been chosen correctly" << endl;
+    cout << "Graph has been loaded correctly" << endl;
 }
 
 void TerminalFlow::chooseToyGraph(TSPGraph &graph) {
@@ -53,13 +51,13 @@ void TerminalFlow::chooseToyGraph(TSPGraph &graph) {
     cin >> selected;
     switch (selected) {
         case 1 :
-            graph = TGraphShipping;
+            loadGraph("TGraphShipping", graph);
             break;
         case 2 :
-            graph = TGraphStadiums;
+            loadGraph("TGraphStadiums", graph);
             break;
         case 3 :
-            graph = TGraphTourism;
+            loadGraph("TGraphTourism", graph);
             break;
         default:
             cout << "Invalid choice. Please try again." << endl;
@@ -86,40 +84,40 @@ void TerminalFlow::chooseFullyConnectedGraph(TSPGraph &graph) {
     cin >> selected;
     switch (selected) {
         case 1 :
-            graph = EFCGraph25;
+            loadGraph("EFCGraph25", graph);
             break;
         case 2 :
-            graph = EFCGraph50;
+            loadGraph("EFCGraph50", graph);
             break;
         case 3 :
-            graph = EFCGraph75;
+            loadGraph("EFCGraph75", graph);
             break;
         case 4 :
-            graph = EFCGraph100;
+            loadGraph("EFCGraph100", graph);
             break;
         case 5 :
-            graph = EFCGraph200;
+            loadGraph("EFCGraph200", graph);
             break;
         case 6 :
-            graph = EFCGraph300;
+            loadGraph("EFCGraph300", graph);
             break;
         case 7 :
-            graph = EFCGraph400;
+            loadGraph("EFCGraph400", graph);
             break;
         case 8 :
-            graph = EFCGraph500;
+            loadGraph("EFCGraph500", graph);
             break;
         case 9 :
-            graph = EFCGraph600;
+            loadGraph("EFCGraph600", graph);
             break;
         case 10 :
-            graph = EFCGraph700;
+            loadGraph("EFCGraph700", graph);
             break;
         case 11 :
-            graph = EFCGraph800;
+            loadGraph("EFCGraph800", graph);
             break;
         case 12 :
-            graph = EFCGraph900;
+            loadGraph("EFCGraph900", graph);
             break;
         default:
             cout << "Invalid choice. Please try again." << endl;
@@ -137,13 +135,13 @@ void TerminalFlow::chooseRealWorldGraph(TSPGraph &graph) {
     cin >> selected;
     switch (selected) {
         case 1 :
-            graph = RWGraph1;
+            loadGraph("RWGraph1", graph);
             break;
         case 2 :
-            graph = RWGraph2;
+            loadGraph("RWGraph2", graph);
             break;
         case 3 :
-            graph = RWGraph3;
+            loadGraph("RWGraph3", graph);
             break;
         default:
             cout << "Invalid choice. Please try again." << endl;
@@ -191,38 +189,65 @@ void TerminalFlow::mainMenu(TSPGraph &graph) {
     }
 }
 
-void TerminalFlow::loadGraphs() {
-    FileReader::loadGraph("../files/Toy-Graphs/shipping.csv", TGraphShipping);
-    FileReader::loadGraph("../files/Toy-Graphs/stadiums.csv", TGraphStadiums);
-    FileReader::loadGraph("../files/Toy-Graphs/tourism.csv", TGraphTourism);
-    FileReader::loadGraph("../files/Real-world-Graphs/graph1/edges.csv", "../files/Real-world-Graphs/graph1/nodes.csv",
-                          RWGraph1);
-    //FileReader::loadGraph("../files/Real-world-Graphs/graph2/edges.csv","../files/Real-world-Graphs/graph2/nodes.csv",RWGraph2); takes 1~min to load
-    //FileReader::loadGraph("../files/Real-world-Graphs/graph3/edges.csv","../files/Real-world-Graphs/graph3/nodes.csv",RWGraph3); takes 10+min to load
-    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_25.csv",
-                          "../files/Extra-Fully-Connected-Graphs/nodes.csv", EFCGraph25);
-    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_50.csv",
-                          "../files/Extra-Fully-Connected-Graphs/nodes.csv", EFCGraph50);
-    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_75.csv",
-                          "../files/Extra-Fully-Connected-Graphs/nodes.csv", EFCGraph75);
-    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_100.csv",
-                          "../files/Extra-Fully-Connected-Graphs/nodes.csv", EFCGraph100);
-    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_200.csv",
-                          "../files/Extra-Fully-Connected-Graphs/nodes.csv", EFCGraph200);
-    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_300.csv",
-                          "../files/Extra-Fully-Connected-Graphs/nodes.csv", EFCGraph300);
-    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_400.csv",
-                          "../files/Extra-Fully-Connected-Graphs/nodes.csv", EFCGraph400);
-    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_500.csv",
-                          "../files/Extra-Fully-Connected-Graphs/nodes.csv", EFCGraph500);
-    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_600.csv",
-                          "../files/Extra-Fully-Connected-Graphs/nodes.csv", EFCGraph600);
-    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_700.csv",
-                          "../files/Extra-Fully-Connected-Graphs/nodes.csv", EFCGraph700);
-    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_800.csv",
-                          "../files/Extra-Fully-Connected-Graphs/nodes.csv", EFCGraph800);
-    FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_900.csv",
-                          "../files/Extra-Fully-Connected-Graphs/nodes.csv", EFCGraph900);
+void TerminalFlow::loadGraph(const std::string &chosenGraph, TSPGraph &graph) {
+    if (chosenGraph == "TGraphShipping")
+        FileReader::loadGraph("../files/Toy-Graphs/shipping.csv", graph);
+    else if (chosenGraph == "TGraphStadiums")
+        FileReader::loadGraph("../files/Toy-Graphs/stadiums.csv", graph);
+    else if (chosenGraph == "TGraphTourism")
+        FileReader::loadGraph("../files/Toy-Graphs/tourism.csv", graph);
+    else if (chosenGraph == "RWGraph1") {
+        cout << "Takes ~1 min to load. Please wait..." << endl;
+        FileReader::loadGraph("../files/Real-world-Graphs/graph1/edges.csv",
+                              "../files/Real-world-Graphs/graph1/nodes.csv",
+                              graph);
+    }
+    else if (chosenGraph == "RWGraph2") {
+        cout << "Takes ~2 min to load. Please wait..." << endl;
+        FileReader::loadGraph("../files/Real-world-Graphs/graph2/edges.csv",
+                              "../files/Real-world-Graphs/graph2/nodes.csv", graph);
+    } else if (chosenGraph == "RWGraph3") {
+        cout << "Takes ~10 min to load. Please wait..." << endl;
+        FileReader::loadGraph("../files/Real-world-Graphs/graph3/edges.csv",
+                              "../files/Real-world-Graphs/graph3/nodes.csv", graph);
+    } else if (chosenGraph == "EFCGraph25")
+        FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_25.csv",
+                              "../files/Extra-Fully-Connected-Graphs/nodes.csv", graph);
+    else if (chosenGraph == "EFCGraph50")
+        FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_50.csv",
+                              "../files/Extra-Fully-Connected-Graphs/nodes.csv", graph);
+    else if (chosenGraph == "EFCGraph75")
+        FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_75.csv",
+                              "../files/Extra-Fully-Connected-Graphs/nodes.csv", graph);
+    else if (chosenGraph == "EFCGraph100")
+        FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_100.csv",
+                              "../files/Extra-Fully-Connected-Graphs/nodes.csv", graph);
+    else if (chosenGraph == "EFCGraph200")
+        FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_200.csv",
+                              "../files/Extra-Fully-Connected-Graphs/nodes.csv", graph);
+    else if (chosenGraph == "EFCGraph300")
+        FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_300.csv",
+                              "../files/Extra-Fully-Connected-Graphs/nodes.csv", graph);
+    else if (chosenGraph == "EFCGraph400")
+        FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_400.csv",
+                              "../files/Extra-Fully-Connected-Graphs/nodes.csv", graph);
+    else if (chosenGraph == "EFCGraph500")
+        FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_500.csv",
+                              "../files/Extra-Fully-Connected-Graphs/nodes.csv", graph);
+    else if (chosenGraph == "EFCGraph600")
+        FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_600.csv",
+                              "../files/Extra-Fully-Connected-Graphs/nodes.csv", graph);
+    else if (chosenGraph == "EFCGraph700")
+        FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_700.csv",
+                              "../files/Extra-Fully-Connected-Graphs/nodes.csv", graph);
+    else if (chosenGraph == "EFCGraph800")
+        FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_800.csv",
+                              "../files/Extra-Fully-Connected-Graphs/nodes.csv", graph);
+    else if (chosenGraph == "EFCGraph900")
+        FileReader::loadGraph("../files/Extra-Fully-Connected-Graphs/edges_900.csv",
+                              "../files/Extra-Fully-Connected-Graphs/nodes.csv", graph);
+    else
+        cout << "Unknown Graph. Check for a possible typo." << endl;
 }
 
 
