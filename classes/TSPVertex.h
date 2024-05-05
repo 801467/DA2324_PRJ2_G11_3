@@ -1,7 +1,3 @@
-//
-// Created by jonas on 03/05/2024.
-//
-
 #ifndef DA2324_PRJ2_G11_3_TSPVERTEX_H
 #define DA2324_PRJ2_G11_3_TSPVERTEX_H
 

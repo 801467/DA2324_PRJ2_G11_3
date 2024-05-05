@@ -1,7 +1,3 @@
-//
-// Created by jonas on 03/05/2024.
-//
-
 #include "TSPVertex.h"
 
 TSPVertex::TSPVertex() : Vertex<int>() {
