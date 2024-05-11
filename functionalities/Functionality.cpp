@@ -32,7 +32,7 @@ void Functionality::backtracking(TSPGraph &graph) {
     cout << endl << endl;
 }
 
-void Functionality::tspBacktracking(TSPGraph &graph, vector<bool> &visitedVector, Vertex<int> *currNode,
+void Functionality::tspBacktracking(TSPGraph &graph, vector<bool> &visitedVector, Vertex<int>*currNode,
                                     vector<int> *currPath, int distance,
                                     double cost) {
     if (distance == graph.getNumVertex()) {
@@ -77,11 +77,107 @@ void Functionality::tspBacktracking(TSPGraph &graph, vector<bool> &visitedVector
     }
 }
 
-/*
-void triangularInequality(WaterSupply& graph){
 
+void Functionality::triangularInequality(TSPGraph& graph){
+    cout << "Running Triangular Approximation Heuristic..." << endl;
+    cout << endl;
+
+    double cost;
+
+    // select root vertex
+    graph.setOrigin(0);
+
+    //compute MST from origin
+    vector<Vertex<int>*> path = prim(graph);
+
+    //perform the travel
+    cost = tspTour(path);
+
+
+    graph.setMinCost(cost);
+
+    cout << "Min Cost: " << graph.getMinCost() << endl;
+    cout << "Min Path: ";
+    for (auto element : path) {
+        cout << element->getInfo() << " ";
+    }
+    cout << path.front()->getInfo() << " ";
+    cout << endl << endl;
 }
 
+vector<Vertex<int>*> Functionality::prim(TSPGraph& graph) {
+    vector<Vertex<int>*> path;
+    MutablePriorityQueue<Vertex<int>> q;
+
+    for (Vertex<int>* v : graph.getVertexSet()){
+        v->setVisited(false);
+        v->setPath(nullptr);
+        v->setDist(INF);
+    }
+    Vertex<int>* origin = graph.getOrigin();
+    origin->setDist(0);
+    q.insert(origin);
+    while (!q.empty()){
+        Vertex<int>* u = q.extractMin();
+        u->setVisited(true);
+        path.push_back(u);
+        for (Edge<int>* e : u->getAdj()){
+            Vertex<int>* w = e->getDest();
+            if (!w->isVisited()){
+                double oldDist = w->getDist();
+                if (e->getWeight() < oldDist){
+                    w->setDist(e->getWeight());
+                    w->setPath(e);
+                    if (oldDist == INF){
+                        q.insert(w);
+                    }
+                    else
+                    {
+                        q.decreaseKey(w);
+                    }
+                }
+            }
+        }
+    }
+    return path;
+}
+
+double Functionality::tspTour(vector<Vertex<int>*> path){
+    double cost = 0;
+    bool connected = false;
+    for (int i = 0; i < path.size()-1; i++){
+        Vertex<int>* nextVertex = path[i + 1];
+        Vertex<int>* currVertex = path[i];
+        for (auto e : currVertex->getAdj()){
+            if(e->getDest() == nextVertex){ // if there is an edge connecting both nodes, simply add the edge cost
+                connected = true;
+                cost += e->getWeight();
+            }
+        }
+        if (!connected){    // if not, calculate the distance between them and add to the cost
+            cost += 1000*calculate_distance(currVertex->getLatitude(),currVertex->getLongitude(),
+                               nextVertex->getLatitude(),nextVertex->getLongitude());
+        }
+        connected = false;
+    }
+
+    //  go from the last node to the origin
+    Vertex<int>* nextVertex = path.front();
+    Vertex<int>* currVertex = path.back();
+    for (auto e : currVertex->getAdj()){
+       if(e->getDest() == nextVertex){
+           connected = true;
+           cost += e->getWeight();
+       }
+   }
+   if(!connected)
+       cost += 1000*calculate_distance(currVertex->getLatitude(),currVertex->getLongitude(),
+                               nextVertex->getLatitude(),nextVertex->getLongitude());
+
+   return cost;
+}
+
+/*
 void otherHeuristic(WaterSupply& graph){
 
 }

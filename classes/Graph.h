@@ -21,11 +21,9 @@ class Edge;
 template <class T>
 class Vertex {
 public:
-    Vertex() {
-        this->info = NULL;
-    }
-
+    Vertex() {}
     Vertex(T in);
+    Vertex(T in, double longitude, double latitude);
     bool operator<(Vertex<T> & vertex) const; // required by MutablePriorityQueue
 
     T getInfo() const;
@@ -37,6 +35,8 @@ public:
     Edge<T> *getPath() const;
     std::vector<Edge<T> *> getIncoming() const;
     double getIncFlow() const;
+    double getLongitude() const;
+    double getLatitude() const;
 
     void reverseAdj();
     void reverseIncoming();
@@ -53,21 +53,21 @@ public:
     void removeOutgoingEdges();
 
     friend class MutablePriorityQueue<Vertex>;
+    int queueIndex = 0;
 protected:
     T info;                // info node
+    double longitude;
+    double latitude;
     std::vector<Edge<T> *> adj;  // outgoing edges
     std::vector<Edge<T> *> incoming; // incoming edges
     // auxiliary fields
-    /*bool visited = false; // used by DFS, BFS, Prim ...
+    bool visited = false; // used by DFS, BFS, Prim ...
     bool processing = false; // used by isDAG (in addition to the visited attribute)
     unsigned int indegree; // used by topsort
     double dist = 0;
     Edge<T> *path = nullptr;
-
-    std::vector<Edge<T> *> incoming; // incoming edges
-
-    int queueIndex = 0; 		// required by MutablePriorityQueue and UFDS
-    double incFlow = 0;*/
+    // required by MutablePriorityQueue and UFDS
+    double incFlow = 0;
 
     void deleteEdge(Edge<T> *edge);
 };
@@ -106,10 +106,10 @@ protected:
     Edge<T> *reverse = nullptr;
     Vertex<T> *orig;
 
-    /*bool selected = false;
+    bool selected = false;
     double flow; // for flow-related problems
     double previousFlow;
-    double tempWeight = 0;*/
+    double tempWeight = 0;
 };
 
 
@@ -136,7 +136,7 @@ public:
     bool removeEdge(const T &source, const T &dest);
     bool addBidirectionalEdge(const T &sourc, const T &dest, double w);
 
-    int getNumVertex() const;
+    virtual int getNumVertex() const;
     std::vector<Vertex<T> *> getVertexSet() const;
 
     std:: vector<T> dfs() const;
@@ -170,7 +170,17 @@ void deleteMatrix(double **m, int n);
 /************************* Vertex  **************************/
 
 template <class T>
-Vertex<T>::Vertex(T in): info(in) {}
+Vertex<T>::Vertex(T in){
+    this->info = in;
+    this->longitude = NULL;
+    this->latitude = NULL;
+}
+template<class T>
+Vertex<T>::Vertex(T in, double longitude, double latitude) {
+    this->info = in;
+    this->longitude = longitude;
+    this->latitude = latitude;
+}
 /*
  * Auxiliary function to add an outgoing edge to a vertex (this),
  * with a given destination vertex (d) and edge weight (w).
@@ -326,6 +336,16 @@ void Vertex<T>::deleteEdge(Edge<T> *edge) {
     delete edge;
 }
 
+template <class T>
+double Vertex<T>::getLongitude() const {
+    return this->longitude;
+}
+template <class T>
+double Vertex<T>::getLatitude() const{
+    return this->latitude;
+}
+
+
 /********************** Edge  ****************************/
 
 template <class T>
@@ -356,7 +376,7 @@ bool Edge<T>::isSelected() const {
     return this->selected;
 }
 
-/*template <class T>
+template <class T>
 double Edge<T>::getFlow() const {
     return flow;
 }
@@ -372,7 +392,7 @@ double Edge<T>::getTempWeight() const {
 template <class T>
 void Edge<T>::setSelected(bool selected) {
     this->selected = selected;
-} */
+}
 
 template <class T>
 void Edge<T>::setReverse(Edge<T> *reverse) {
@@ -430,13 +450,13 @@ Vertex<T> * Graph<T>::findVertex(const T &in) const {
 /*
  * Finds the index of the vertex with a given content.
  */
-/*template <class T>
+template <class T>
 int Graph<T>::findVertexIdx(const T &in) const {
     for (unsigned i = 0; i < vertexSet.size(); i++)
         if (vertexSet[i]->getInfo() == in)
             return i;
     return -1;
-} */
+}
 /*
  *  Adds a vertex with a given content or info (in) to a graph (this).
  *  Returns true if successful, and false if a vertex with that content already exists.

@@ -61,7 +61,9 @@ void TerminalFlow::runFunctionality(TSPGraph &graph) {
             runFunctionality(graph);
             break;
         case 2 :
-            cout << "Functionality::triangularInequality(graph)" << endl;
+            start = chrono::system_clock::now();
+            Functionality::triangularInequality(graph);
+            printTimeLapsed(start);
             runFunctionality(graph);
             break;
         case 3 :

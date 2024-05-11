@@ -2,18 +2,17 @@
 #define DA2324_PRJ2_G11_3_TSPGRAPH_H
 
 #include "Graph.h"
-#include "TSPVertex.h"
 
 using namespace std;
 
 class TSPGraph : public Graph<int> {
-    Vertex<int> *origin{};
+    Vertex<int>* origin{};
     double minCost{};
     vector<int> minPath;
 public:
     TSPGraph() = default;
     bool addVertex(int id, double longitude, double latitude);
-    Vertex<int> *getOrigin() { return origin; };
+    Vertex<int>* getOrigin() { return origin; };
     void setOrigin(int id) { origin = findVertex(id); };
     double getMinCost() const { return minCost; };
     void setMinCost(double cost) { minCost = cost; };

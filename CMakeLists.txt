@@ -19,5 +19,5 @@ add_executable(DA2324_PRJ2_G11_3
         utils/FileReader.cpp
         utils/FileReader.h
         main.cpp
-        classes/TSPVertex.h
-        classes/TSPVertex.cpp)
+        utils/haversine.cpp
+        utils/haversine.cpp)

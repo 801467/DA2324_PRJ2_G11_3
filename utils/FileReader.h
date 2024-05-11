@@ -2,7 +2,6 @@
 #define FILEREADER_H
 
 #include "../classes/TSPGraph.h"
-#include "../classes/TSPVertex.h"
 #include <iostream>
 #include <fstream>
 #include <string>
