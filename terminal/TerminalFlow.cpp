@@ -202,16 +202,16 @@ void TerminalFlow::loadGraph(const std::string &chosenGraph, TSPGraph &graph) {
     else if (chosenGraph == "TGraphTourism")
         FileReader::loadGraph("../files/Toy-Graphs/tourism.csv", graph);
     else if (chosenGraph == "RWGraph1") {
-        cout << "Takes ~1 min to load. Please wait..." << endl;
+        cout << "Takes ~10 sec to load. Please wait..." << endl;
         FileReader::loadGraph("../files/Real-world-Graphs/graph1/edges.csv",
                               "../files/Real-world-Graphs/graph1/nodes.csv",
                               graph);
     } else if (chosenGraph == "RWGraph2") {
-        cout << "Takes ~5 min to load. Please wait..." << endl;
+        cout << "Takes ~1 min to load. Please wait..." << endl;
         FileReader::loadGraph("../files/Real-world-Graphs/graph2/edges.csv",
                               "../files/Real-world-Graphs/graph2/nodes.csv", graph);
     } else if (chosenGraph == "RWGraph3") {
-        cout << "Takes ~15 min to load. Please wait..." << endl;
+        cout << "Takes ~2 min to load. Please wait..." << endl;
         FileReader::loadGraph("../files/Real-world-Graphs/graph3/edges.csv",
                               "../files/Real-world-Graphs/graph3/nodes.csv", graph);
     } else if (chosenGraph == "EFCGraph25")
