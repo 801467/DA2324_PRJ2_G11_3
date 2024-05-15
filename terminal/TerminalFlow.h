@@ -10,6 +10,7 @@
 
 class TerminalFlow {
 public:
+    static void welcome(TSPGraph &graph);
     static void call(TSPGraph &graph);
     static void chooseGraph(TSPGraph &graph);
     static void runFunctionality(TSPGraph &graph);
@@ -20,6 +21,7 @@ private:
     static void chooseFullyConnectedGraph(TSPGraph &graph);
     static void chooseRealWorldGraph(TSPGraph &graph);
     static void printTimeLapsed(const chrono::time_point<chrono::system_clock> &start);
+    static void resetGraph(TSPGraph &graph);
 };
 
 

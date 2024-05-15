@@ -3,11 +3,15 @@
 
 using namespace std;
 
-void TerminalFlow::call(TSPGraph &graph) {
+void TerminalFlow::welcome(TSPGraph &graph) {
     cout << endl;
     cout << "Welcome to our Routing Management System" << endl;
     cout << "---------------------------------------------" << endl;
     cout << endl;
+    call(graph);
+}
+
+void TerminalFlow::call(TSPGraph &graph) {
     chooseGraph(graph);
     runFunctionality(graph);
 }
@@ -44,7 +48,8 @@ void TerminalFlow::runFunctionality(TSPGraph &graph) {
     cout << "2. Approximation algorithm for TSP with triangular inequality" << endl;
     cout << "3. Approximation algorithm for TSP with nearest neighbour heuristic" << endl;
     cout << "4. Approximation algorithm for TSP when not fully connected" << endl;
-    cout << "5. Exit" << endl;
+    cout << "5. Choose a different graph." << endl;
+    cout << "6. Exit" << endl;
 
     int selected;
     cin >> selected;
@@ -77,6 +82,10 @@ void TerminalFlow::runFunctionality(TSPGraph &graph) {
             runFunctionality(graph);
             break;
         case 5 :
+            resetGraph(graph);
+            call(graph);
+            break;
+        case 6 :
             exit(0);
         default:
             cout << "Invalid choice. Please try again." << endl;
@@ -267,4 +276,9 @@ void TerminalFlow::printTimeLapsed(const chrono::time_point<chrono::system_clock
          << "Finished algorithm at " << ctime(&end_time)
          << "Elapsed time: " << elapsed_seconds.count() << "s"
          << endl;
+}
+
+void TerminalFlow::resetGraph(TSPGraph &graph) {
+    TSPGraph emptyGraph;
+    graph = emptyGraph;
 }

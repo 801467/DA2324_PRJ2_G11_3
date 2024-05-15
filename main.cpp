@@ -6,6 +6,6 @@
 
 int main(){
     TSPGraph graph;
-    TerminalFlow::call(graph);
+    TerminalFlow::welcome(graph);
     return 0;
 }
