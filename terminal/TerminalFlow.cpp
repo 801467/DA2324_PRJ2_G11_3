@@ -42,7 +42,7 @@ void TerminalFlow::runFunctionality(TSPGraph &graph) {
     cout << "---------------------------------------------" << endl;
     cout << "1. Backtracking algorithm for TSP" << endl;
     cout << "2. Approximation algorithm for TSP with triangular inequality" << endl;
-    cout << "3. Approximation algorithm for TSP with another heuristic" << endl;
+    cout << "3. Approximation algorithm for TSP with nearest neighbour heuristic" << endl;
     cout << "4. Approximation algorithm for TSP when not fully connected" << endl;
     cout << "5. Exit" << endl;
 
@@ -67,7 +67,9 @@ void TerminalFlow::runFunctionality(TSPGraph &graph) {
             runFunctionality(graph);
             break;
         case 3 :
-            cout << "Functionality::otherHeuristic(graph)" << endl;
+            start = chrono::system_clock::now();
+            Functionality::nearestNeighbour(graph);
+            printTimeLapsed(start);
             runFunctionality(graph);
             break;
         case 4 :

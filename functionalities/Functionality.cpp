@@ -177,11 +177,66 @@ double Functionality::tspTour(vector<Vertex<int>*> path){
    return cost;
 }
 
-/*
-void otherHeuristic(WaterSupply& graph){
 
+void Functionality::nearestNeighbour(TSPGraph& graph){
+    cout << "Running Nearest Neighbour Heuristic..." << endl;
+    cout << endl;
+
+    double cost;
+    vector<Vertex<int>*> visited;
+    vector<double> minimum_distance_traveled;
+
+    auto nodes = graph.getVertexSet();
+    auto distance = graph.getAdjacencyMatrix();
+    auto neighbor = graph.getOrigin();
+    // HERE
+    auto start_node_index = std::distance(nodes.begin(), find(nodes.begin(), nodes.end(), neighbor));
+
+    std::vector<Vertex<int>*>::size_type no_nodes = nodes.size();
+    int noN = 0;
+    while (noN < no_nodes && find(visited.begin(), visited.end(), neighbor) == visited.end()) {
+
+        visited.push_back(neighbor);
+        auto neighbor_index = std::distance(nodes.begin(), std::find(nodes.begin(), nodes.end(), neighbor));
+        int noNeighbour = 0;
+        double MIN = INF;
+
+        while (noNeighbour < distance[neighbor_index].size()) {
+
+            if (std::find(visited.begin(), visited.end(), nodes[noNeighbour]) == visited.end()) { //look for unvisitied nodes
+                if (MIN == INF) {
+                    MIN = distance[neighbor_index][noNeighbour];
+                    neighbor = nodes[noNeighbour];
+                }
+                else {
+                    double min_distance = min(distance[neighbor_index][noNeighbour], MIN);
+                    if (distance[neighbor_index][noNeighbour] < MIN) {
+                        MIN = min_distance;
+                        neighbor = nodes[noNeighbour];
+                    }
+                }
+            }
+            noNeighbour += 1;
+        }
+        minimum_distance_traveled.push_back(MIN);
+        noN += 1;
+    }
+    auto last_node_index = std::distance(nodes.begin(), find(nodes.begin(), nodes.end(), visited.back()));
+    minimum_distance_traveled.back() = distance[last_node_index][start_node_index];
+
+    cost = std::accumulate(minimum_distance_traveled.begin(), minimum_distance_traveled.end(), 0.0);
+    graph.setMinCost(cost);
+
+    cout << "Min Cost: " << graph.getMinCost() << endl;
+    cout << "Min Path: ";
+    for (auto element : visited) {
+        cout << element->getInfo() << " ";
+    }
+    cout << visited.front()->getInfo() << " ";
+    cout << endl << endl;
 }
 
+/*
 void notFullyConnected(WaterSupply& graph){
     
 }*/

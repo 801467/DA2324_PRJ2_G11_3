@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "vector"
+#include <numeric>
 #include "../utils/haversine.h"
 #include "../classes/Graph.h"
 #include "../classes/TSPGraph.h"
@@ -12,8 +13,8 @@ class Functionality {
 public:
     static void backtracking(TSPGraph &graph);
     static void triangularInequality(TSPGraph& graph);
+    static void nearestNeighbour(TSPGraph& graph);
     /*
-    static void otherHeuristic(WaterSupply& graph);
     static void notFullyConnected(WaterSupply& graph);*/
 
 private:

@@ -18,6 +18,7 @@ public:
     void setMinCost(double cost) { minCost = cost; };
     vector<int> getMinPath() { return minPath; };
     void setMinPath(vector<int> path) { minPath = std::move(path); };
+    vector<vector<double>> getAdjacencyMatrix() const;
 };
 
 
