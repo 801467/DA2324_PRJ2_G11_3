@@ -494,8 +494,7 @@ Vertex<T> *Graph<T>::findVertex(const T &in) const {
     if (vertexIndex.count(in) == 0)
         return nullptr;
 
-    auto i = vertexIndex.at(in);
-    return vertexSet[i];
+    return vertexSet[vertexIndex.at(in)];
 }
 
 /*
