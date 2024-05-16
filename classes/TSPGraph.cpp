@@ -36,3 +36,18 @@ vector<vector<double>> TSPGraph::getAdjacencyMatrix() const {
 
     return adjacencyMatrix;
 }
+
+void TSPGraph::clearState() {
+    origin = nullptr;
+    minCost = INF;
+    minPath.clear();
+
+    // vertex
+    for(auto v : vertexSet){
+        v->setVisited(false);
+        v->setProcessing(false);
+        v->setDist(0);
+        v->setPath(nullptr);
+        v->setIncFlow(0);
+    }
+}

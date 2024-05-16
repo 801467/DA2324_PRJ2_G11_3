@@ -19,6 +19,7 @@ public:
     vector<int> getMinPath() { return minPath; };
     void setMinPath(vector<int> path) { minPath = std::move(path); };
     vector<vector<double>> getAdjacencyMatrix() const;
+    void clearState();
 };
 
 

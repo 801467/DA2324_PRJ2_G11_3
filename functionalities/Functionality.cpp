@@ -4,6 +4,8 @@ void Functionality::backtracking(TSPGraph &graph) {
     cout << "Running Backtracking..." << endl;
     cout << endl;
 
+    graph.clearState();
+
     unsigned int nodesSize = graph.getNumVertex();
     vector<bool> visitedVector(nodesSize);
     for (int i = 0; i < nodesSize; i++)
@@ -84,6 +86,7 @@ void Functionality::triangularInequality(TSPGraph &graph) {
     cout << "Running Triangular Approximation Heuristic..." << endl;
     cout << endl;
 
+    graph.clearState();
     double cost;
 
     // select root vertex
@@ -182,6 +185,7 @@ void Functionality::nearestNeighbour(TSPGraph &graph) {
     cout << "Running Nearest Neighbour Heuristic..." << endl;
     cout << endl;
 
+    graph.clearState();
     double cost;
     vector<Vertex<int> *> visited;
     vector<double> minimum_distance_traveled;
