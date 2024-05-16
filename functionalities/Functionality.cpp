@@ -25,14 +25,16 @@ void Functionality::backtracking(TSPGraph &graph) {
     tspBacktracking(graph, visitedVector, graph.findVertex(0), &currPath, 1, 0);
 
     cout << "Min Cost: " << graph.getMinCost() << endl;
-    cout << "Min Path: ";
+    cout << "Path: " << graph.getOrigin()->getInfo() << " ";
+    unsigned int i = 0;
     for (auto element: graph.getMinPath()) {
-        cout << element << " ";
+        i++;
+        (i % 20 == 0) ? cout << endl : cout << element << " ";
     }
-    cout << endl << endl;
+    cout << graph.getOrigin()->getInfo() << endl << endl;
 }
 
-void Functionality::tspBacktracking(TSPGraph &graph, vector<bool> &visitedVector, Vertex<int>*currNode,
+void Functionality::tspBacktracking(TSPGraph &graph, vector<bool> &visitedVector, Vertex<int> *currNode,
                                     vector<int> *currPath, int distance,
                                     double cost) {
     if (distance == graph.getNumVertex()) {
@@ -78,7 +80,7 @@ void Functionality::tspBacktracking(TSPGraph &graph, vector<bool> &visitedVector
 }
 
 
-void Functionality::triangularInequality(TSPGraph& graph){
+void Functionality::triangularInequality(TSPGraph &graph) {
     cout << "Running Triangular Approximation Heuristic..." << endl;
     cout << endl;
 
@@ -88,51 +90,49 @@ void Functionality::triangularInequality(TSPGraph& graph){
     graph.setOrigin(0);
 
     //compute MST from origin
-    vector<Vertex<int>*> path = prim(graph);
+    vector<Vertex<int> *> path = prim(graph);
 
     //perform the travel
     cost = tspTour(path);
 
-
     graph.setMinCost(cost);
 
     cout << "Min Cost: " << graph.getMinCost() << endl;
-    cout << "Min Path: ";
-    for (auto element : path) {
-        cout << element->getInfo() << " ";
+    cout << "Path: ";
+    unsigned int i = 0;
+    for (auto element: path) {
+        i++;
+        (i % 20 == 0) ? cout << endl : cout << element->getInfo() << " ";
     }
-    cout << path.front()->getInfo() << " ";
-    cout << endl << endl;
+    cout << path.front()->getInfo() << endl << endl;
 }
 
-vector<Vertex<int>*> Functionality::prim(TSPGraph& graph) {
-    vector<Vertex<int>*> path;
+vector<Vertex<int> *> Functionality::prim(TSPGraph &graph) {
+    vector<Vertex<int> *> path;
     MutablePriorityQueue<Vertex<int>> q;
 
-    for (Vertex<int>* v : graph.getVertexSet()){
+    for (Vertex<int> *v: graph.getVertexSet()) {
         v->setVisited(false);
         v->setPath(nullptr);
         v->setDist(INF);
     }
-    Vertex<int>* origin = graph.getOrigin();
+    Vertex<int> *origin = graph.getOrigin();
     origin->setDist(0);
     q.insert(origin);
-    while (!q.empty()){
-        Vertex<int>* u = q.extractMin();
+    while (!q.empty()) {
+        Vertex<int> *u = q.extractMin();
         u->setVisited(true);
         path.push_back(u);
-        for (Edge<int>* e : u->getAdj()){
-            Vertex<int>* w = e->getDest();
-            if (!w->isVisited()){
+        for (Edge<int> *e: u->getAdj()) {
+            Vertex<int> *w = e->getDest();
+            if (!w->isVisited()) {
                 double oldDist = w->getDist();
-                if (e->getWeight() < oldDist){
+                if (e->getWeight() < oldDist) {
                     w->setDist(e->getWeight());
                     w->setPath(e);
-                    if (oldDist == INF){
+                    if (oldDist == INF) {
                         q.insert(w);
-                    }
-                    else
-                    {
+                    } else {
                         q.decreaseKey(w);
                     }
                 }
@@ -142,48 +142,48 @@ vector<Vertex<int>*> Functionality::prim(TSPGraph& graph) {
     return path;
 }
 
-double Functionality::tspTour(vector<Vertex<int>*> path){
+double Functionality::tspTour(vector<Vertex<int> *> path) {
     double cost = 0;
     bool connected = false;
-    for (int i = 0; i < path.size()-1; i++){
-        Vertex<int>* nextVertex = path[i + 1];
-        Vertex<int>* currVertex = path[i];
-        for (auto e : currVertex->getAdj()){
-            if(e->getDest() == nextVertex){ // if there is an edge connecting both nodes, simply add the edge cost
+    for (int i = 0; i < path.size() - 1; i++) {
+        Vertex<int> *nextVertex = path[i + 1];
+        Vertex<int> *currVertex = path[i];
+        for (auto e: currVertex->getAdj()) {
+            if (e->getDest() == nextVertex) { // if there is an edge connecting both nodes, simply add the edge cost
                 connected = true;
                 cost += e->getWeight();
             }
         }
-        if (!connected){    // if not, calculate the distance between them and add to the cost
-            cost += 1000*calculate_distance(currVertex->getLatitude(),currVertex->getLongitude(),
-                               nextVertex->getLatitude(),nextVertex->getLongitude());
+        if (!connected) {    // if not, calculate the distance between them and add to the cost
+            cost += 1000 * calculate_distance(currVertex->getLatitude(), currVertex->getLongitude(),
+                                              nextVertex->getLatitude(), nextVertex->getLongitude());
         }
         connected = false;
     }
 
     //  go from the last node to the origin
-    Vertex<int>* nextVertex = path.front();
-    Vertex<int>* currVertex = path.back();
-    for (auto e : currVertex->getAdj()){
-       if(e->getDest() == nextVertex){
-           connected = true;
-           cost += e->getWeight();
-       }
-   }
-   if(!connected)
-       cost += 1000*calculate_distance(currVertex->getLatitude(),currVertex->getLongitude(),
-                               nextVertex->getLatitude(),nextVertex->getLongitude());
+    Vertex<int> *nextVertex = path.front();
+    Vertex<int> *currVertex = path.back();
+    for (auto e: currVertex->getAdj()) {
+        if (e->getDest() == nextVertex) {
+            connected = true;
+            cost += e->getWeight();
+        }
+    }
+    if (!connected)
+        cost += 1000 * calculate_distance(currVertex->getLatitude(), currVertex->getLongitude(),
+                                          nextVertex->getLatitude(), nextVertex->getLongitude());
 
-   return cost;
+    return cost;
 }
 
 
-void Functionality::nearestNeighbour(TSPGraph& graph){
+void Functionality::nearestNeighbour(TSPGraph &graph) {
     cout << "Running Nearest Neighbour Heuristic..." << endl;
     cout << endl;
 
     double cost;
-    vector<Vertex<int>*> visited;
+    vector<Vertex<int> *> visited;
     vector<double> minimum_distance_traveled;
 
     auto nodes = graph.getVertexSet();
@@ -192,7 +192,7 @@ void Functionality::nearestNeighbour(TSPGraph& graph){
     // HERE
     auto start_node_index = std::distance(nodes.begin(), find(nodes.begin(), nodes.end(), neighbor));
 
-    std::vector<Vertex<int>*>::size_type no_nodes = nodes.size();
+    std::vector<Vertex<int> *>::size_type no_nodes = nodes.size();
     int noN = 0;
     while (noN < no_nodes && find(visited.begin(), visited.end(), neighbor) == visited.end()) {
 
@@ -203,12 +203,12 @@ void Functionality::nearestNeighbour(TSPGraph& graph){
 
         while (noNeighbour < distance[neighbor_index].size()) {
 
-            if (std::find(visited.begin(), visited.end(), nodes[noNeighbour]) == visited.end()) { //look for unvisitied nodes
+            if (std::find(visited.begin(), visited.end(), nodes[noNeighbour]) ==
+                visited.end()) { //look for unvisitied nodes
                 if (MIN == INF) {
                     MIN = distance[neighbor_index][noNeighbour];
                     neighbor = nodes[noNeighbour];
-                }
-                else {
+                } else {
                     double min_distance = min(distance[neighbor_index][noNeighbour], MIN);
                     if (distance[neighbor_index][noNeighbour] < MIN) {
                         MIN = min_distance;
@@ -228,12 +228,13 @@ void Functionality::nearestNeighbour(TSPGraph& graph){
     graph.setMinCost(cost);
 
     cout << "Min Cost: " << graph.getMinCost() << endl;
-    cout << "Min Path: ";
-    for (auto element : visited) {
-        cout << element->getInfo() << " ";
+    cout << "Path: ";
+    unsigned int i = 0;
+    for (auto element: visited) {
+        i++;
+        (i % 20 == 0) ? cout << endl : cout << element->getInfo() << " ";
     }
-    cout << visited.front()->getInfo() << " ";
-    cout << endl << endl;
+    cout << visited.front()->getInfo() << endl << endl;
 }
 
 /*
