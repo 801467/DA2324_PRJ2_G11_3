@@ -186,6 +186,10 @@ void Functionality::nearestNeighbour(TSPGraph &graph) {
     cout << endl;
 
     graph.clearState();
+
+    // select root vertex
+    graph.setOrigin(0);
+
     double cost;
     vector<Vertex<int> *> visited;
     vector<double> minimum_distance_traveled;
@@ -193,7 +197,6 @@ void Functionality::nearestNeighbour(TSPGraph &graph) {
     auto nodes = graph.getVertexSet();
     auto distance = graph.getAdjacencyMatrix();
     auto neighbor = graph.getOrigin();
-    // HERE
     auto start_node_index = std::distance(nodes.begin(), find(nodes.begin(), nodes.end(), neighbor));
 
     std::vector<Vertex<int> *>::size_type no_nodes = nodes.size();
