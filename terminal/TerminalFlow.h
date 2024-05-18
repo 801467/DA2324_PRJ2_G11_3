@@ -22,6 +22,7 @@ private:
     static void chooseRealWorldGraph(TSPGraph &graph);
     static void printTimeLapsed(const chrono::time_point<chrono::system_clock> &start);
     static void resetGraph(TSPGraph &graph);
+    static int chooseOriginNode(TSPGraph &graph);
 };
 
 

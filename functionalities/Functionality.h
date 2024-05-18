@@ -12,17 +12,20 @@
 class Functionality {
 public:
     static void backtracking(TSPGraph &graph);
-    static void triangularInequality(TSPGraph& graph);
-    static void nearestNeighbour(TSPGraph& graph);
-    /*
-    static void notFullyConnected(WaterSupply& graph);*/
+    static void triangularInequality(TSPGraph &graph);
+    static void nearestNeighbour(TSPGraph &graph);
+    static void backtrackedNearestNeighbour(TSPGraph &graph, int origin);
 
 private:
     static void
-    tspBacktracking(TSPGraph &graph, vector<bool> &visitedVector, Vertex<int>* currNode, vector<int> *currPath,
+    tspBacktracking(TSPGraph &graph, vector<bool> &visitedVector, Vertex<int> *currNode, vector<int> *currPath,
                     int distance, double cost);
-    static vector<Vertex<int>*> prim(TSPGraph& graph);
-    static double tspTour(vector<Vertex<int>*> visitOrder);
+    static vector<Vertex<int> *> prim(TSPGraph &graph);
+    static double tspTour(vector<Vertex<int> *> visitOrder);
+    static void
+    tspBacktrackingNearestNeighbour(TSPGraph &graph, vector<bool> &visitedVector, Vertex<int> *currNode,
+                                    vector<int> *currPath, int distance,
+                                    double cost);
 };
 
 

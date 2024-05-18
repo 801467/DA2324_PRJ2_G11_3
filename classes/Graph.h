@@ -179,6 +179,8 @@ public:
 
     std::vector<Vertex<T> *> getVertexSet() const;
 
+    std::map<T, int> getVertexIndex() const;
+
     std::vector<T> dfs() const;
 
     std::vector<T> dfs(const T &source) const;
@@ -484,6 +486,11 @@ int Graph<T>::getNumVertex() const {
 template<class T>
 std::vector<Vertex<T> *> Graph<T>::getVertexSet() const {
     return vertexSet;
+}
+
+template<class T>
+std::map<T, int> Graph<T>::getVertexIndex() const {
+    return vertexIndex;
 }
 
 /*

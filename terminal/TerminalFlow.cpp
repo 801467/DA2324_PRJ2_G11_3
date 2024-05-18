@@ -78,7 +78,9 @@ void TerminalFlow::runFunctionality(TSPGraph &graph) {
             runFunctionality(graph);
             break;
         case 4 :
-            cout << "Functionality::notFullyConnected(graph)" << endl;
+            start = chrono::system_clock::now();
+            Functionality::backtrackedNearestNeighbour(graph, chooseOriginNode(graph));
+            printTimeLapsed(start);
             runFunctionality(graph);
             break;
         case 5 :
@@ -281,4 +283,15 @@ void TerminalFlow::printTimeLapsed(const chrono::time_point<chrono::system_clock
 void TerminalFlow::resetGraph(TSPGraph &graph) {
     TSPGraph emptyGraph;
     graph = emptyGraph;
+}
+
+int TerminalFlow::chooseOriginNode(TSPGraph &graph) {
+    int selected = -1;
+    while (selected == -1) {
+        cout << "Please choose an Origin Vertex ID, from 0 to " << graph.getNumVertex() - 1 << ":" << endl;
+        cin >> selected;
+        if (selected >= graph.getNumVertex() || selected < 0)
+            selected = -1;
+    }
+    return selected;
 }

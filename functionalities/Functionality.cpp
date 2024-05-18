@@ -17,10 +17,7 @@ void Functionality::backtracking(TSPGraph &graph) {
 
     // set initial cost to max number possible
     graph.setMinCost(std::numeric_limits<double>::max());
-
-    // reset min path
     vector<int> currPath;
-    graph.setMinPath(currPath);
 
     // recursively branch out,
     // keep track of visited nodes, distance and min cost found
@@ -188,63 +185,65 @@ void Functionality::nearestNeighbour(TSPGraph &graph) {
     graph.clearState();
 
     // select root vertex
-    graph.setOrigin(0);
+    int origin = 0;
+    graph.setOrigin(origin);
 
-    double cost;
-    vector<Vertex<int> *> visited;
-    vector<double> minimum_distance_traveled;
+    double cost = 0;
+    vector<int> path;
 
     auto nodes = graph.getVertexSet();
     auto distance = graph.getAdjacencyMatrix();
     auto neighbor = graph.getOrigin();
-    auto start_node_index = std::distance(nodes.begin(), find(nodes.begin(), nodes.end(), neighbor));
+    auto start_node_index = graph.getVertexIndex()[origin];
 
-    std::vector<Vertex<int> *>::size_type no_nodes = nodes.size();
-    int noN = 0;
-    while (noN < no_nodes && find(visited.begin(), visited.end(), neighbor) == visited.end()) {
+    int neighbor_index;
+    double MIN;
 
-        visited.push_back(neighbor);
-        auto neighbor_index = std::distance(nodes.begin(), std::find(nodes.begin(), nodes.end(), neighbor));
-        int noNeighbour = 0;
-        double MIN = INF;
+    while (true) {
+        neighbor->setVisited(true);
+        path.push_back(neighbor->getInfo());
+        neighbor_index = graph.getVertexIndex()[neighbor->getInfo()];
+        MIN = INF;
 
-        while (noNeighbour < distance[neighbor_index].size()) {
-
-            if (std::find(visited.begin(), visited.end(), nodes[noNeighbour]) ==
-                visited.end()) { //look for unvisitied nodes
-                if (MIN == INF) {
-                    MIN = distance[neighbor_index][noNeighbour];
-                    neighbor = nodes[noNeighbour];
-                } else {
-                    double min_distance = min(distance[neighbor_index][noNeighbour], MIN);
-                    if (distance[neighbor_index][noNeighbour] < MIN) {
-                        MIN = min_distance;
-                        neighbor = nodes[noNeighbour];
-                    }
+        for (int i = 0; i < nodes.size(); i++) {
+            // look for unvisited nodes
+            if (!nodes[i]->isVisited()) {
+                if (distance[neighbor_index][i] < MIN) {
+                    MIN = min(distance[neighbor_index][i], MIN);
+                    neighbor = nodes[i];
                 }
             }
-            noNeighbour += 1;
         }
-        minimum_distance_traveled.push_back(MIN);
-        noN += 1;
+        // if all nodes were already visited
+        if(MIN == INF)
+            break;
+
+        cost += MIN;
     }
-    auto last_node_index = std::distance(nodes.begin(), find(nodes.begin(), nodes.end(), visited.back()));
-    minimum_distance_traveled.back() = distance[last_node_index][start_node_index];
+    // add cost of last node to origin
+    cost += distance[path.back()][start_node_index];
 
-    cost = std::accumulate(minimum_distance_traveled.begin(), minimum_distance_traveled.end(), 0.0);
-    graph.setMinCost(cost);
-
-    cout << "Min Cost: " << graph.getMinCost() << endl;
+    cout << "Min Cost: " << cost << endl;
     cout << "Path: ";
     unsigned int i = 0;
-    for (auto element: visited) {
+    for (auto element: path) {
         i++;
-        (i % 20 == 0) ? cout << endl : cout << element->getInfo() << " ";
+        (i % 20 == 0) ? cout << endl : cout << element << " ";
     }
-    cout << visited.front()->getInfo() << endl << endl;
+    cout << path.front() << endl << endl;
 }
 
-/*
-void notFullyConnected(WaterSupply& graph){
-    
-}*/
+void Functionality::backtrackedNearestNeighbour(TSPGraph &graph, int origin) {
+    cout << "Running Backtracked Nearest Neighbour Heuristic..." << endl;
+    cout << endl;
+
+    graph.clearState();
+
+    // TODO
+}
+
+void Functionality::tspBacktrackingNearestNeighbour(TSPGraph &graph, vector<bool> &visitedVector, Vertex<int> *currNode,
+                                                    vector<int> *currPath, int distance,
+                                                    double cost) {
+    // TODO
+}
