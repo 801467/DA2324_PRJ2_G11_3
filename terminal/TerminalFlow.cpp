@@ -78,8 +78,7 @@ void TerminalFlow::runFunctionality(TSPGraph &graph) {
             runFunctionality(graph);
             break;
         case 4 :
-            start = chrono::system_clock::now();
-            runNotConnectedFunctionalities(graph);
+            start = runNotConnectedFunctionalities(graph);
             printTimeLapsed(start);
             runFunctionality(graph);
             break;
@@ -296,7 +295,7 @@ int TerminalFlow::chooseOriginNode(TSPGraph &graph) {
     return selected;
 }
 
-void TerminalFlow::runNotConnectedFunctionalities(TSPGraph &graph) {
+chrono::time_point<chrono::system_clock> TerminalFlow::runNotConnectedFunctionalities(TSPGraph &graph) {
     // first check if a Hamiltonian Cycle is feasible
     bool feasible = false;
     int origin;
@@ -307,5 +306,8 @@ void TerminalFlow::runNotConnectedFunctionalities(TSPGraph &graph) {
     }
 
     // then run it
+    auto start = chrono::system_clock::now();
     Functionality::backtrackedNearestNeighbour(graph, origin);
+
+    return start;
 }

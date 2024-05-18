@@ -9,6 +9,7 @@ class TSPGraph : public Graph<int> {
     Vertex<int>* origin{};
     double minCost{};
     vector<int> minPath;
+    bool forceStop = false;
 public:
     TSPGraph() = default;
     bool addVertex(int id, double longitude, double latitude);
@@ -18,6 +19,8 @@ public:
     void setMinCost(double cost) { minCost = cost; };
     vector<int> getMinPath() { return minPath; };
     void setMinPath(vector<int> path) { minPath = std::move(path); };
+    bool getForceStop() { return forceStop; };
+    void setForceStop(bool shouldStop) { forceStop = std::move(shouldStop); };
     vector<vector<double>> getAdjacencyMatrix() const;
     void clearState();
 };

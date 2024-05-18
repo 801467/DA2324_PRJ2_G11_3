@@ -262,19 +262,89 @@ void Functionality::nearestNeighbour(TSPGraph &graph) {
     cout << path.front() << endl << endl;
 }
 
-void Functionality::backtrackedNearestNeighbour(TSPGraph &graph, int origin) {
+void Functionality::backtrackedNearestNeighbour(TSPGraph &graph, int originId) {
     cout << "Running Backtracked Nearest Neighbour Heuristic..." << endl;
     cout << endl;
 
     graph.clearState();
 
-    // TODO
+    // backtrack system
+    unsigned int nodesSize = graph.getNumVertex();
+    vector<bool> visitedVector(nodesSize);
+    for (int i = 0; i < nodesSize; i++)
+        visitedVector[i] = false;
+
+    // start from "origin"
+    graph.setOrigin(originId);
+    visitedVector[graph.getVertexIndex()[originId]] = true;
+
+    // set initial cost to max number possible
+    graph.setMinCost(std::numeric_limits<double>::max());
+    vector<int> currPath;
+
+    // recursively branch out,
+    // keep track of visited nodes, distance and min cost found
+    tspBacktrackingNearestNeighbour(graph, visitedVector, graph.findVertex(originId), &currPath, 1, 0);
+
+    cout << "Min Cost: " << graph.getMinCost() << endl;
+    cout << "Path: " << originId << " ";
+    unsigned int i = 0;
+    for (auto element: graph.getMinPath()) {
+        i++;
+        (i % 20 == 0) ? cout << endl : cout << element << " ";
+    }
+    cout << originId << endl << endl;
 }
 
 void Functionality::tspBacktrackingNearestNeighbour(TSPGraph &graph, vector<bool> &visitedVector, Vertex<int> *currNode,
                                                     vector<int> *currPath, int distance,
                                                     double cost) {
-    // TODO
+    if (graph.getForceStop()) return;
+
+    if (distance == graph.getNumVertex()) {
+        for (auto adj: currNode->getAdj()) {
+            // If "last node" is same as source
+            if (adj->getDest() == graph.getOrigin()) {
+                // check if cost is less than previously found
+                double currCost = cost + adj->getWeight();
+                graph.setMinCost(currCost);
+                graph.setMinPath(*currPath);
+
+                // IMPORTANT:
+                // script finishes on first successful route back to origin
+                graph.setForceStop(true);
+                break;
+            }
+        }
+        return;
+    }
+
+    // Backtracking Part
+    // Pick "nearest neighbours" before other adjacent nodes
+    std::vector<Edge<int> *> sortedEdges = currNode->getAdj();
+    sort(sortedEdges.begin(), sortedEdges.end(),
+         [](Edge<int> *a, Edge<int> *b) {
+             return a->getWeight() < b->getWeight();
+         });
+
+    for (auto adj: sortedEdges) {
+        int destId = adj->getDest()->getInfo();
+        // if not visited
+        if (!visitedVector[destId]) {
+            // mark as visited
+            visitedVector[destId] = true;
+            currPath->push_back(destId);
+
+            // Then recursively run this method on the adjacent node,
+            // until all paths have either failed or found the source
+            tspBacktrackingNearestNeighbour(graph, visitedVector, adj->getDest(), currPath, distance + 1,
+                                            cost + adj->getWeight());
+
+            // mark as unvisited when backtracking
+            visitedVector[destId] = false;
+            currPath->pop_back();
+        }
+    }
 }
 
 bool Functionality::checkHamiltonianFeasibility(TSPGraph &graph, int originId) {
