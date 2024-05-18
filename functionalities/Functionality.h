@@ -15,7 +15,7 @@ public:
     static void triangularInequality(TSPGraph &graph);
     static void nearestNeighbour(TSPGraph &graph);
     static void backtrackedNearestNeighbour(TSPGraph &graph, int origin);
-    static void checkHamiltonianFeasibility(TSPGraph &graph, int originId);
+    static bool checkHamiltonianFeasibility(TSPGraph &graph, int originId);
 
 private:
     static void

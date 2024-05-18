@@ -79,9 +79,7 @@ void TerminalFlow::runFunctionality(TSPGraph &graph) {
             break;
         case 4 :
             start = chrono::system_clock::now();
-            //placeholder, but you can use this in the beginning of your function just
-            // to check if a Hamiltonian Cycle is feasible
-            Functionality::checkHamiltonianFeasibility(graph, chooseOriginNode(graph));
+            runNotConnectedFunctionalities(graph);
             printTimeLapsed(start);
             runFunctionality(graph);
             break;
@@ -296,4 +294,18 @@ int TerminalFlow::chooseOriginNode(TSPGraph &graph) {
             selected = -1;
     }
     return selected;
+}
+
+void TerminalFlow::runNotConnectedFunctionalities(TSPGraph &graph) {
+    // first check if a Hamiltonian Cycle is feasible
+    bool feasible = false;
+    int origin;
+    while (!feasible) {
+        origin = chooseOriginNode(graph);
+        feasible = Functionality::checkHamiltonianFeasibility(graph, origin);
+        if (!feasible) cout << "Chosen origin is not feasible to do an Hamiltonian Cycle, please choose another.";
+    }
+
+    // then run it
+    Functionality::backtrackedNearestNeighbour(graph, origin);
 }

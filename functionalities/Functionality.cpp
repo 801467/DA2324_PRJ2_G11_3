@@ -93,7 +93,7 @@ void Functionality::triangularInequality(TSPGraph &graph) {
     prim(graph);
 
     //perform a pre-order walk of the MST
-    vector<Vertex<int>*> path = preOrderWalk(graph);
+    vector<Vertex<int> *> path = preOrderWalk(graph);
 
     //perform the travel
     cost = tspTour(path);
@@ -147,26 +147,26 @@ void Functionality::prim(TSPGraph &graph) {
     }
 }
 
-vector<Vertex<int> *> Functionality::preOrderWalk(TSPGraph &graph){
-    vector<Vertex<int>*> orderedPath;
-    Vertex<int>* origin = graph.getOrigin();
+vector<Vertex<int> *> Functionality::preOrderWalk(TSPGraph &graph) {
+    vector<Vertex<int> *> orderedPath;
+    Vertex<int> *origin = graph.getOrigin();
 
-    for (auto v : graph.getVertexSet()){
+    for (auto v: graph.getVertexSet()) {
         v->setVisited(false);
     }
 
-    tspDfsVisit(origin,orderedPath);
+    tspDfsVisit(origin, orderedPath);
 
 
     return orderedPath;
 }
 
-void Functionality::tspDfsVisit(Vertex<int>* v, vector<Vertex<int>*> &orderedPath) {
+void Functionality::tspDfsVisit(Vertex<int> *v, vector<Vertex<int> *> &orderedPath) {
     v->setVisited(true);
     orderedPath.push_back(v);
-    for (auto e: v->getAdj()){
+    for (auto e: v->getAdj()) {
         auto w = e->getDest();
-        if (!w->isVisited() && (w->getPath() == e)) tspDfsVisit(w,orderedPath);
+        if (!w->isVisited() && (w->getPath() == e)) tspDfsVisit(w, orderedPath);
     }
 }
 
@@ -244,7 +244,7 @@ void Functionality::nearestNeighbour(TSPGraph &graph) {
             }
         }
         // if all nodes were already visited
-        if(MIN == INF)
+        if (MIN == INF)
             break;
 
         cost += MIN;
@@ -277,7 +277,7 @@ void Functionality::tspBacktrackingNearestNeighbour(TSPGraph &graph, vector<bool
     // TODO
 }
 
-void Functionality::checkHamiltonianFeasibility(TSPGraph &graph, int originId) {
+bool Functionality::checkHamiltonianFeasibility(TSPGraph &graph, int originId) {
     graph.clearState();
 
     bool feasible = true;
@@ -287,9 +287,8 @@ void Functionality::checkHamiltonianFeasibility(TSPGraph &graph, int originId) {
     if (dfsRes.size() != graph.getNumVertex()) feasible = false;
 
     // number of edges of each node must be >= 2
-    for(auto v : graph.getVertexSet()){
+    for (auto v: graph.getVertexSet()) {
         if (v->getAdj().size() <= 1) feasible = false;
     }
-    feasible ? cout << "True" << endl : cout << "False" << endl;
-
+    return feasible;
 }
