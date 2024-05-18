@@ -200,6 +200,7 @@ public:
  *  Returns true if successful, and false if a vertex with that content already exists.
  */
     bool addVertex(const T &in);
+    int findVertexIdx(const T &in) const;
 
 protected:
     std::vector<Vertex<T> *> vertexSet;    // vertex set
@@ -208,7 +209,7 @@ protected:
     double **distMatrix = nullptr;   // dist matrix for Floyd-Warshall
     int **pathMatrix = nullptr;   // path matrix for Floyd-Warshall
 
-    int findVertexIdx(const T &in) const;
+
 };
 
 void deleteMatrix(int **m, int n);

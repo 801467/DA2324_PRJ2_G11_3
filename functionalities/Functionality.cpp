@@ -112,9 +112,42 @@ void Functionality::triangularInequality(TSPGraph &graph) {
 
 }
 
+void Functionality::triangularInequality2(TSPGraph &graph) {
+    cout << "Running Triangular Approximation Heuristic..." << endl;
+    cout << endl;
+
+    graph.clearState();
+    double cost;
+
+    // select root vertex
+    graph.setOrigin(0);
+
+    //compute MST from origin
+    prim2(graph);
+
+    //perform a pre-order walk of the MST
+    vector<Vertex<int>*> path = preOrderWalk(graph);
+
+    //perform the travel
+    cost = tspTour(path);
+
+    graph.setMinCost(cost);
+
+    cout << "Min Cost: " << graph.getMinCost() << endl;
+    cout << "Path: ";
+    unsigned int i = 0;
+    for (auto element: path) {
+        i++;
+        (i % 20 == 0) ? cout << endl : cout << element->getInfo() << " ";
+    }
+
+    cout << path.front()->getInfo() << endl << endl;
+
+}
+
+
 
 void Functionality::prim(TSPGraph &graph) {
-    vector<Vertex<int> *> path;
     MutablePriorityQueue<Vertex<int>> q;
 
     for (Vertex<int> *v: graph.getVertexSet()) {
@@ -128,7 +161,6 @@ void Functionality::prim(TSPGraph &graph) {
     while (!q.empty()) {
         Vertex<int> *u = q.extractMin();
         u->setVisited(true);
-        path.push_back(u);
         for (Edge<int> *e: u->getAdj()) {
             Vertex<int> *w = e->getDest();
             if (!w->isVisited()) {
@@ -140,6 +172,51 @@ void Functionality::prim(TSPGraph &graph) {
                         q.insert(w);
                     } else {
                         q.decreaseKey(w);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Functionality::prim2(TSPGraph &graph) {
+    MutablePriorityQueue<Vertex<int>> q;
+    auto distance = graph.getAdjacencyMatrix();
+    auto vertexSet = graph.getVertexSet();
+    int graph_size = graph.getNumVertex();
+
+    for (Vertex<int> *v: graph.getVertexSet()) {
+        v->setVisited(false);
+        v->setPath(nullptr);
+        v->setDist(INF);
+    }
+
+    Vertex<int>* origin = graph.getOrigin();
+    origin->setDist(0);
+    q.insert(origin);
+    while (!q.empty()) {
+        Vertex<int>* u = q.extractMin();
+        int u_index = graph.findVertexIdx(u->getInfo());
+        u->setVisited(true);
+        for (int v_index = 0; v_index < graph_size; ++v_index) {
+            auto v = vertexSet[v_index];
+            if (!v->isVisited()) {
+                double edgeWeight = distance[u_index][v_index];
+                double oldDist = v->getDist();
+                if (edgeWeight < oldDist) {
+                    v->setDist(edgeWeight);
+                    for ( auto e : u->getAdj()){
+                        if (e->getDest() == v) v->setPath(e);
+                    }
+                    if (v->getPath() == nullptr){
+                        auto newEdge = u->addEdge(v,edgeWeight);
+                        v->addEdge(u,edgeWeight);
+                        v->setPath(newEdge);
+                    }
+                    if (oldDist == INF) {
+                        q.insert(v);
+                    } else {
+                        q.decreaseKey(v);
                     }
                 }
             }

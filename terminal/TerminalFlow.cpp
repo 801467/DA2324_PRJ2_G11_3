@@ -50,6 +50,7 @@ void TerminalFlow::runFunctionality(TSPGraph &graph) {
     cout << "4. Approximation algorithm for TSP when not fully connected" << endl;
     cout << "5. Choose a different graph." << endl;
     cout << "6. Exit" << endl;
+    cout << "7. Approximation algorithm for TSP with triangular inequality 2" << endl;
 
     int selected;
     cin >> selected;
@@ -91,6 +92,13 @@ void TerminalFlow::runFunctionality(TSPGraph &graph) {
             break;
         case 6 :
             exit(0);
+            break;
+        case 7 :
+            start = chrono::system_clock::now();
+            Functionality::triangularInequality2(graph);
+            printTimeLapsed(start);
+            runFunctionality(graph);
+            break;
         default:
             cout << "Invalid choice. Please try again." << endl;
             runFunctionality(graph);
