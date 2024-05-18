@@ -221,8 +221,8 @@ void deleteMatrix(double **m, int n);
 template<class T>
 Vertex<T>::Vertex(T in) {
     this->info = in;
-    this->longitude = NULL;
-    this->latitude = NULL;
+    this->longitude = 0.0;
+    this->latitude = 0.0;
 }
 
 template<class T>
