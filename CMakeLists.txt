@@ -20,4 +20,5 @@ add_executable(DA2324_PRJ2_G11_3
         utils/FileReader.h
         main.cpp
         utils/haversine.cpp
-        utils/haversine.cpp)
+        utils/haversine.cpp
+)

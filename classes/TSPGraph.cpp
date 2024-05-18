@@ -30,7 +30,6 @@ vector<vector<double>> TSPGraph::getAdjacencyMatrix() const {
             size_t destIndex = vertexIndex.at(edge->getDest()->getInfo());
 
             // Set the distance between the current vertex and its destination
-            // You need to implement a method in the Edge class to get the weight
             adjacencyMatrix[i][destIndex] = edge->getWeight();
         }
 

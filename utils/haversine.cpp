@@ -7,7 +7,7 @@
  */
 
 #include "haversine.h"
-
+#define _USE_MATH_DEFINES
 #include <cmath>
 
 /**********************************************************************

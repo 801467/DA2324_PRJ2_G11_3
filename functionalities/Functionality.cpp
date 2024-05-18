@@ -90,7 +90,10 @@ void Functionality::triangularInequality(TSPGraph &graph) {
     graph.setOrigin(0);
 
     //compute MST from origin
-    vector<Vertex<int> *> path = prim(graph);
+    prim(graph);
+
+    //perform a pre-order walk of the MST
+    vector<Vertex<int>*> path = preOrderWalk(graph);
 
     //perform the travel
     cost = tspTour(path);
@@ -104,10 +107,13 @@ void Functionality::triangularInequality(TSPGraph &graph) {
         i++;
         (i % 20 == 0) ? cout << endl : cout << element->getInfo() << " ";
     }
+
     cout << path.front()->getInfo() << endl << endl;
+
 }
 
-vector<Vertex<int> *> Functionality::prim(TSPGraph &graph) {
+
+void Functionality::prim(TSPGraph &graph) {
     vector<Vertex<int> *> path;
     MutablePriorityQueue<Vertex<int>> q;
 
@@ -139,7 +145,29 @@ vector<Vertex<int> *> Functionality::prim(TSPGraph &graph) {
             }
         }
     }
-    return path;
+}
+
+vector<Vertex<int> *> Functionality::preOrderWalk(TSPGraph &graph){
+    vector<Vertex<int>*> orderedPath;
+    Vertex<int>* origin = graph.getOrigin();
+
+    for (auto v : graph.getVertexSet()){
+        v->setVisited(false);
+    }
+
+    tspDfsVisit(origin,orderedPath);
+
+
+    return orderedPath;
+}
+
+void Functionality::tspDfsVisit(Vertex<int>* v, vector<Vertex<int>*> &orderedPath) {
+    v->setVisited(true);
+    orderedPath.push_back(v);
+    for (auto e: v->getAdj()){
+        auto w = e->getDest();
+        if (!w->isVisited() && (w->getPath() == e)) tspDfsVisit(w,orderedPath);
+    }
 }
 
 double Functionality::tspTour(vector<Vertex<int> *> path) {
@@ -152,6 +180,7 @@ double Functionality::tspTour(vector<Vertex<int> *> path) {
             if (e->getDest() == nextVertex) { // if there is an edge connecting both nodes, simply add the edge cost
                 connected = true;
                 cost += e->getWeight();
+                break;
             }
         }
         if (!connected) {    // if not, calculate the distance between them and add to the cost
@@ -246,4 +275,21 @@ void Functionality::tspBacktrackingNearestNeighbour(TSPGraph &graph, vector<bool
                                                     vector<int> *currPath, int distance,
                                                     double cost) {
     // TODO
+}
+
+void Functionality::checkHamiltonianFeasibility(TSPGraph &graph, int originId) {
+    graph.clearState();
+
+    bool feasible = true;
+    vector<int> dfsRes = graph.dfs(originId);
+
+    // number of visitable nodes is smaller than number of total nodes
+    if (dfsRes.size() != graph.getNumVertex()) feasible = false;
+
+    // number of edges of each node must be >= 2
+    for(auto v : graph.getVertexSet()){
+        if (v->getAdj().size() <= 1) feasible = false;
+    }
+    feasible ? cout << "True" << endl : cout << "False" << endl;
+
 }

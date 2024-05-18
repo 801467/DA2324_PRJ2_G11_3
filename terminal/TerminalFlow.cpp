@@ -79,7 +79,9 @@ void TerminalFlow::runFunctionality(TSPGraph &graph) {
             break;
         case 4 :
             start = chrono::system_clock::now();
-            Functionality::backtrackedNearestNeighbour(graph, chooseOriginNode(graph));
+            //placeholder, but you can use this in the beginning of your function just
+            // to check if a Hamiltonian Cycle is feasible
+            Functionality::checkHamiltonianFeasibility(graph, chooseOriginNode(graph));
             printTimeLapsed(start);
             runFunctionality(graph);
             break;
