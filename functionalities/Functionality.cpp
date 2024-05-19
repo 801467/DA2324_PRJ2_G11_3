@@ -321,6 +321,7 @@ void Functionality::tspBacktrackingNearestNeighbour(TSPGraph &graph, vector<bool
 
         return;
     }
+    else if (currNode == destinationNode) return;
 
     // Backtracking Part
     // Pick "nearest neighbours" before other adjacent nodes

@@ -53,6 +53,7 @@ void TSPGraph::clearState() {
     origin = nullptr;
     minCost = INF;
     minPath.clear();
+    forceStop = false;
 
     // vertex
     for (auto v: vertexSet) {
