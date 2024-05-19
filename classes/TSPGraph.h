@@ -19,7 +19,7 @@ public:
     void setMinCost(double cost) { minCost = cost; };
     vector<int> getMinPath() { return minPath; };
     void setMinPath(vector<int> path) { minPath = std::move(path); };
-    bool getForceStop() { return forceStop; };
+    bool getForceStop() const { return forceStop; };
     void setForceStop(bool shouldStop) { forceStop = std::move(shouldStop); };
     vector<vector<double>> getAdjacencyMatrix() const;
     void clearState();

@@ -1,3 +1,4 @@
+#include <unordered_set>
 #include "Functionality.h"
 
 void Functionality::backtracking(TSPGraph &graph) {
@@ -60,10 +61,12 @@ void Functionality::tspBacktracking(TSPGraph &graph, vector<bool> &visitedVector
         }
 
         int destId = adj->getDest()->getInfo();
+        int destPosition = graph.getVertexIndex()[destId];
+
         // if not visited
-        if (!visitedVector[destId]) {
+        if (!visitedVector[destPosition]) {
             // mark as visited
-            visitedVector[destId] = true;
+            visitedVector[destPosition] = true;
             currPath->push_back(destId);
 
             // Then recursively run this method on the adjacent node,
@@ -72,7 +75,7 @@ void Functionality::tspBacktracking(TSPGraph &graph, vector<bool> &visitedVector
                             cost + adj->getWeight());
 
             // mark as unvisited when backtracking
-            visitedVector[destId] = false;
+            visitedVector[destPosition] = false;
             currPath->pop_back();
         }
     }
@@ -267,20 +270,117 @@ void Functionality::runClusteredGraphs(TSPGraph &graph, int originId) {
     cout << endl;
 
     graph.clearState();
+    graph.setOrigin(originId);
 
-    backtrackedNearestNeighbour(graph, originId, graph.getNumVertex() - 1);
+    auto clusters = generateClusters(graph);
+    cout << "Generated a total of " << clusters.size() << " clusters. Less than 150 nodes in each." << endl << endl;
 
-    cout << "Min Cost: " << graph.getMinCost() << endl;
+    double cost = 0;
+    vector<int> path;
+    for (auto cluster: clusters) {
+        int origin = cluster.getOrigin()->getInfo();
+        int destination = cluster.getVertexSet().back()->getInfo();
+        backtrackedNearestNeighbour(cluster, origin, destination);
+
+        // TODO add transition costs
+        cost += cluster.getMinCost();
+        auto clusterPath = cluster.getMinPath();
+        path.insert(path.end(), clusterPath.begin(), clusterPath.end());
+    }
+
+    cout << "Min Cost: " << cost << " (+ transitions)" << endl;
     cout << "Path: " << originId << " ";
     unsigned int i = 0;
-    for (auto element: graph.getMinPath()) {
+    for (auto element: path) {
         i++;
-        (i % 20 == 0) ? cout << endl : cout << element << " ";
+        (i % 30 == 0) ? cout << endl : cout << element << " ";
     }
-    cout << endl << endl;
+    cout << originId << endl << endl;
+}
+
+vector<TSPGraph> Functionality::generateClusters(TSPGraph &graph) {
+    vector<TSPGraph> clusters;
+
+    // Avoid unnecessary smaller clustering
+    if (graph.getVertexSet().size() < 150) {
+        clusters.push_back(graph);
+        return clusters;
+    }
+
+    // split in exact half
+    int median = graph.getNumVertex() / 2;
+    TSPGraph graph1 = generateSubgraph(graph, 0, median - 1);
+    TSPGraph graph2 = generateSubgraph(graph, median, graph.getNumVertex() - 1);
+
+    // TODO: check frontier
+    if (!isValidSubgraph(graph, graph1) || !isValidSubgraph(graph, graph2)) {
+        int firstId = graph.getVertexSet().front()->getInfo();
+        int lastId = graph.getVertexSet().back()->getInfo();
+        cout << "Rolled back to previous graph from " << firstId << " to " << lastId << endl;
+
+        clusters.push_back(graph);
+        return clusters;
+    }
+
+    // attempt to subdivide even deeper any of the subgraphs
+    auto newClusters1 = generateClusters(graph1);
+    auto newClusters2 = generateClusters(graph2);
+
+    clusters.insert(clusters.end(), newClusters1.begin(), newClusters1.end());
+    clusters.insert(clusters.end(), newClusters2.begin(), newClusters2.end());
+
+    return clusters;
+}
+
+TSPGraph Functionality::generateSubgraph(TSPGraph &originalGraph, int fromPosition, int toPosition) {
+    TSPGraph newGraph;
+
+    auto vertexSet = originalGraph.getVertexSet();
+    unordered_set<int> validKeys;
+
+    // add all vertexes
+    for (int i = fromPosition; i < toPosition; i++) {
+        newGraph.addVertex(vertexSet[i]->getInfo(), vertexSet[i]->getLongitude(), vertexSet[i]->getLatitude());
+        validKeys.insert(vertexSet[i]->getInfo());
+    }
+
+    // add all valid edges
+    for (auto v: newGraph.getVertexSet()) {
+        auto originalVertex = originalGraph.findVertex(v->getInfo());
+        for (auto e: originalVertex->getAdj()) {
+            if (validKeys.count(e->getDest()->getInfo()) == 0) continue;
+
+            // ensure you pass a vertex of the subgraph and not origin graph
+            v->addEdge(newGraph.findVertex(e->getDest()->getInfo()), e->getWeight());
+        }
+    }
+
+    // needed for subgraph validation
+    newGraph.setOrigin(vertexSet[fromPosition]->getInfo());
+
+    return newGraph;
+}
+
+bool Functionality::isValidSubgraph(TSPGraph &originalGraph, TSPGraph &subgraph) {
+    int originId = originalGraph.getOrigin()->getInfo();
+    int subgraphOrigin = subgraph.findVertex(originId) ? originId : subgraph.getVertexSet().front()->getInfo();
+
+    bool validSubgraph = checkHamiltonianFeasibility(subgraph, subgraphOrigin);
+    // compensate state clearance of previous check
+    subgraph.setOrigin(subgraphOrigin);
+
+    if (!validSubgraph) {
+        int firstId = subgraph.getVertexSet().front()->getInfo();
+        int lastId = subgraph.getVertexSet().back()->getInfo();
+        cout << "Unable to divide into smaller subgraph from " << firstId << " to " << lastId << endl;
+    }
+
+    return validSubgraph;
 }
 
 void Functionality::backtrackedNearestNeighbour(TSPGraph &graph, int originId, int destinationId) {
+    graph.clearState();
+
     // backtrack system
     unsigned int nodesSize = graph.getNumVertex();
     vector<bool> visitedVector(nodesSize);
@@ -320,8 +420,7 @@ void Functionality::tspBacktrackingNearestNeighbour(TSPGraph &graph, vector<bool
         }
 
         return;
-    }
-    else if (currNode == destinationNode) return;
+    } else if (currNode == destinationNode) return;
 
     // Backtracking Part
     // Pick "nearest neighbours" before other adjacent nodes
@@ -333,10 +432,11 @@ void Functionality::tspBacktrackingNearestNeighbour(TSPGraph &graph, vector<bool
 
     for (auto adj: sortedEdges) {
         int destId = adj->getDest()->getInfo();
+        int destPosition = graph.getVertexIndex()[destId];
         // if not visited
-        if (!visitedVector[destId]) {
+        if (!visitedVector[destPosition]) {
             // mark as visited
-            visitedVector[destId] = true;
+            visitedVector[destPosition] = true;
             currPath->push_back(destId);
 
             // Then recursively run this method on the adjacent node,
@@ -345,7 +445,7 @@ void Functionality::tspBacktrackingNearestNeighbour(TSPGraph &graph, vector<bool
                                             cost + adj->getWeight(), destinationNode);
 
             // mark as unvisited when backtracking
-            visitedVector[destId] = false;
+            visitedVector[destPosition] = false;
             currPath->pop_back();
         }
     }

@@ -544,7 +544,7 @@ bool Graph<T>::removeVertex(const T &in) {
     for (auto u: vertexSet) {
         u->removeEdge(v->getInfo());
     }
-    vertexSet.erase(&vertexSet[i]);
+    vertexSet.erase(vertexSet.begin() + i);
     vertexIndex.erase(in);
     delete v;
     return true;

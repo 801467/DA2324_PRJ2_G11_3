@@ -30,6 +30,9 @@ private:
     tspBacktrackingNearestNeighbour(TSPGraph &graph, vector<bool> &visitedVector, Vertex<int> *currNode,
                                     vector<int> *currPath, int distance,
                                     double cost, Vertex<int> *destinationNode);
+    static vector<TSPGraph> generateClusters(TSPGraph &graph);
+    static TSPGraph generateSubgraph(TSPGraph &originalGraph, int fromPosition, int toPosition);
+    static bool isValidSubgraph(TSPGraph &originalGraph, TSPGraph &subgraph);
 };
 
 
