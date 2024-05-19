@@ -9,6 +9,15 @@ bool TSPGraph::addVertex(int id, double longitude, double latitude) {
     return true;
 }
 
+/**
+ * @brief Generates the adjacency matrix for the TSPGraph.
+ * 
+ * This function generates the adjacency matrix for the graph. The adjacency matrix is a 2D vector where the element at the i-th row and j-th column represents the weight of the edge between the i-th and j-th vertices.
+ * If there's no direct edge between the i-th and j-th vertices, the element is set to INF (representing "infinity").
+ * The diagonal elements of the matrix (representing the distance of a vertex to itself) are set to 0.
+ * 
+ * @return A 2D vector representing the adjacency matrix of the graph.
+ */
 vector<vector<double>> TSPGraph::getAdjacencyMatrix() const {
     // Get the number of vertices
     auto vertices = getVertexSet();
