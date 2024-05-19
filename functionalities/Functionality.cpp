@@ -1,6 +1,14 @@
 #include <unordered_set>
 #include "Functionality.h"
 
+/**
+ * @brief Runs the backtracking algorithm on a TSPGraph.
+ * 
+ * This function runs a backtracking algorithm to solve the Traveling Salesman Problem (TSP) on a given graph.
+ * It starts from the "origin" node, and recursively explores all possible paths, keeping track of the minimum cost found.
+ * 
+ * @param graph The TSPGraph to run the algorithm on.
+ */
 void Functionality::backtracking(TSPGraph &graph) {
     cout << "Running Backtracking..." << endl;
     cout << endl;
@@ -34,6 +42,19 @@ void Functionality::backtracking(TSPGraph &graph) {
     cout << graph.getOrigin()->getInfo() << endl << endl;
 }
 
+/**
+ * @brief Recursive helper function for the backtracking algorithm.
+ * 
+ * This function is called by the backtracking function to recursively explore all possible paths in the TSPGraph.
+ * It updates the visitedVector, currPath, distance, and cost as it explores the graph.
+ * 
+ * @param graph The TSPGraph to run the algorithm on.
+ * @param visitedVector A vector keeping track of which nodes have been visited.
+ * @param currNode The current node being visited.
+ * @param currPath A vector representing the current path being explored.
+ * @param distance The number of nodes visited so far.
+ * @param cost The total cost of the current path.
+ */
 void Functionality::tspBacktracking(TSPGraph &graph, vector<bool> &visitedVector, Vertex<int> *currNode,
                                     vector<int> *currPath, int distance,
                                     double cost) {
@@ -82,6 +103,18 @@ void Functionality::tspBacktracking(TSPGraph &graph, vector<bool> &visitedVector
 }
 
 
+/**
+ * @brief Runs the Triangular Approximation Heuristic on a TSPGraph.
+ * 
+ * This function runs the Triangular Approximation Heuristic on the given graph.
+ * The heuristic works by computing the Minimum Spanning Tree (MST) of the graph, performing a pre-order walk of the MST,
+ * and then performing the travel of the TSP tour based on the pre-order walk. 
+ * If it cannot find an edge connecting two consecutive nodes of the path,
+ * it calculates the distance between them using the Haversine formula.
+ * The cost of the tour is then calculated and displayed.
+ * 
+ * @param graph The TSPGraph to run the heuristic on.
+ */
 void Functionality::triangularInequality(TSPGraph &graph) {
     cout << "Running Triangular Approximation Heuristic..." << endl;
     cout << endl;
@@ -116,6 +149,15 @@ void Functionality::triangularInequality(TSPGraph &graph) {
 }
 
 
+/**
+ * @brief Computes the minimum spanning tree (MST) from the origin using Prim's algorithm.
+ * 
+ * This function uses Prim's algorithm to compute the minimum spanning tree of the given graph.
+ * The MST is a subset of the edges of the graph that connects all the vertices together,
+ *  without any cycles and with the minimum possible total edge weight.
+ * 
+ * @param graph The TSPGraph to compute the MST on.
+ */
 void Functionality::prim(TSPGraph &graph) {
     vector<Vertex<int> *> path;
     MutablePriorityQueue<Vertex<int>> q;
@@ -150,6 +192,15 @@ void Functionality::prim(TSPGraph &graph) {
     }
 }
 
+/**
+ * @brief Performs a pre-order walk of the minimum spanning tree (MST).
+ * 
+ * This function performs a pre-order walk (root, left, right) of the MST of the given graph.
+ * The result is a vector of vertices representing the order in which they are visited during the walk.
+ * 
+ * @param graph The TSPGraph to perform the pre-order walk on.
+ * @return A vector of vertices representing the order of the pre-order walk.
+ */
 vector<Vertex<int> *> Functionality::preOrderWalk(TSPGraph &graph) {
     vector<Vertex<int> *> orderedPath;
     Vertex<int> *origin = graph.getOrigin();
@@ -164,6 +215,17 @@ vector<Vertex<int> *> Functionality::preOrderWalk(TSPGraph &graph) {
     return orderedPath;
 }
 
+
+/**
+ * @brief Helper function for the pre-order walk of the MST.
+ * 
+ * This function is called by the preOrderWalk function to perform the pre-order walk of the MST.
+ * It visits the given vertex and recursively checks its adjacent vertices to see if they have been visited
+ * and if the edge connecting them is the path to follow. If so, it visits the adjacent vertex.
+ * 
+ * @param v The vertex to visit.
+ * @param orderedPath A vector of vertices representing the order of the pre-order walk.
+ */
 void Functionality::tspDfsVisit(Vertex<int> *v, vector<Vertex<int> *> &orderedPath) {
     v->setVisited(true);
     orderedPath.push_back(v);
@@ -173,6 +235,17 @@ void Functionality::tspDfsVisit(Vertex<int> *v, vector<Vertex<int> *> &orderedPa
     }
 }
 
+/**
+ * @brief Performs the travel of the TSP tour.
+ * 
+ * This function performs the travel of the TSP tour based on the given path.
+ * If it cannot find an edge connecting two nodes, it calculates the distance between them using the Haversine formula,
+ * and adds it to the cost of the tour. If there is an edge connecting the nodes, the cost of the edge is added to the cost of the tour.
+ * The cost of the tour is then returned.
+ * 
+ * @param path A vector of vertices representing the order of the TSP tour.
+ * @return The cost of the TSP tour.
+ */
 double Functionality::tspTour(vector<Vertex<int> *> path) {
     double cost = 0;
     bool connected = false;
@@ -210,6 +283,16 @@ double Functionality::tspTour(vector<Vertex<int> *> path) {
 }
 
 
+/**
+ * @brief Runs the Nearest Neighbour Heuristic on a TSPGraph.
+ * 
+ * This function runs the Nearest Neighbour Heuristic to solve the Traveling Salesman Problem (TSP) on a given graph.
+ * First it uses the Adjacency Matrix to store the distance between each pair of nodes.
+ * Then starts from the "origin" node, and at each step, it moves to the unvisited node that is closest to the current node.
+ * The cost of the tour is calculated as the sum of the distances of each step.
+ * 
+ * @param graph The TSPGraph to run the algorithm on.
+ */
 void Functionality::nearestNeighbour(TSPGraph &graph) {
     cout << "Running Nearest Neighbour Heuristic..." << endl;
     cout << endl;
@@ -265,6 +348,16 @@ void Functionality::nearestNeighbour(TSPGraph &graph) {
     cout << path.front() << endl << endl;
 }
 
+/**
+ * @brief Runs the Clustered, Backtracked with Nearest Neighbour Heuristic on a TSPGraph.
+ * 
+ * This function runs the Clustered, Backtracked with Nearest Neighbour Heuristic on the given graph.
+ * It generates clusters of nodes with less than 150 nodes in each, and then runs the backtracked nearest neighbour heuristic on each cluster.
+ * The cost of the tour is then calculated and displayed.
+ * 
+ * @param graph The TSPGraph to run the heuristic on.
+ * @param originId The ID of the origin node.
+ */
 void Functionality::runClusteredGraphs(TSPGraph &graph, int originId) {
     cout << "Running Clustered, Backtracked with Nearest Neighbour Heuristic..." << endl;
     cout << endl;
@@ -301,6 +394,16 @@ void Functionality::runClusteredGraphs(TSPGraph &graph, int originId) {
     cout << originId << endl << endl;
 }
 
+/**
+ * @brief Generates clusters of nodes with less than 150 nodes in each.
+ * 
+ * This function generates clusters of nodes with less than 150 nodes in each from the given graph.
+ * It splits the graph into two subgraphs, and then attempts to subdivide even deeper any of the subgraphs.
+ * The function then returns a vector of TSPGraphs representing the clusters.
+ * 
+ * @param graph The TSPGraph to generate the clusters from.
+ * @return A vector of TSPGraphs representing the clusters.
+ */
 vector<TSPGraph> Functionality::generateClusters(TSPGraph &graph) {
     vector<TSPGraph> clusters;
 
@@ -335,6 +438,18 @@ vector<TSPGraph> Functionality::generateClusters(TSPGraph &graph) {
     return clusters;
 }
 
+/**
+ * @brief Generates a subgraph from the original graph.
+ * 
+ * This function generates a subgraph from the original graph, starting from the "fromPosition" node and ending at the "toPosition" node.
+ * It adds all the vertexes from the original graph to the new graph, and then adds all the valid edges from the original graph to the new graph.
+ * The function then returns the new graph.
+ * 
+ * @param originalGraph The original graph to generate the subgraph from.
+ * @param fromPosition The position of the starting node.
+ * @param toPosition The position of the ending node.
+ * @return The new subgraph.
+ */
 TSPGraph Functionality::generateSubgraph(TSPGraph &originalGraph, int fromPosition, int toPosition) {
     TSPGraph newGraph;
 
@@ -364,6 +479,16 @@ TSPGraph Functionality::generateSubgraph(TSPGraph &originalGraph, int fromPositi
     return newGraph;
 }
 
+/**
+ * @brief Checks if a subgraph is valid.
+ * 
+ * This function checks if a subgraph is valid by checking if it is Hamiltonian feasible.
+ * If the subgraph is not Hamiltonian feasible, the function displays an error message.
+ * 
+ * @param originalGraph The original graph.
+ * @param subgraph The subgraph to check.
+ * @return True if the subgraph is valid, false otherwise.
+ */
 bool Functionality::isValidSubgraph(TSPGraph &originalGraph, TSPGraph &subgraph) {
     int originId = originalGraph.getOrigin()->getInfo();
     int subgraphOrigin = subgraph.findVertex(originId) ? originId : subgraph.getVertexSet().front()->getInfo();
@@ -381,6 +506,16 @@ bool Functionality::isValidSubgraph(TSPGraph &originalGraph, TSPGraph &subgraph)
     return validSubgraph;
 }
 
+/**
+ * @brief Runs the backtracked nearest neighbour heuristic on a TSPGraph.
+ * 
+ * This function runs the backtracked nearest neighbour heuristic on the given graph, starting from the "originId" node and ending at the "destinationId" node.
+ * It clears the state of the graph, and then runs the backtracked nearest neighbour heuristic on the graph.
+ * 
+ * @param graph The TSPGraph to run the heuristic on.
+ * @param originId The ID of the origin node.
+ * @param destinationId The ID of the destination node.
+ */
 void Functionality::backtrackedNearestNeighbour(TSPGraph &graph, int originId, int destinationId) {
     graph.clearState();
 
@@ -404,6 +539,20 @@ void Functionality::backtrackedNearestNeighbour(TSPGraph &graph, int originId, i
                                     graph.findVertex(destinationId));
 }
 
+/**
+ * @brief Recursive helper function for the backtracked nearest neighbour heuristic.
+ * 
+ * This function is called by the backtrackedNearestNeighbour function to recursively explore all possible paths in the TSPGraph.
+ * It updates the visitedVector, currPath, distance, and cost as it explores the graph.
+ * 
+ * @param graph The TSPGraph to run the heuristic on.
+ * @param visitedVector A vector keeping track of which nodes have been visited.
+ * @param currNode The current node being visited.
+ * @param currPath A vector representing the current path being explored.
+ * @param distance The number of nodes visited so far.
+ * @param cost The total cost of the current path.
+ * @param destinationNode The destination node.
+ */
 void Functionality::tspBacktrackingNearestNeighbour(TSPGraph &graph, vector<bool> &visitedVector, Vertex<int> *currNode,
                                                     vector<int> *currPath, int distance,
                                                     double cost, Vertex<int> *destinationNode) {
@@ -454,6 +603,17 @@ void Functionality::tspBacktrackingNearestNeighbour(TSPGraph &graph, vector<bool
     }
 }
 
+/**
+ * @brief Checks if a graph is Hamiltonian feasible.
+ * 
+ * This function checks if a graph is Hamiltonian feasible by checking if the number of visitable nodes is smaller than the number of total nodes,
+ * and if the number of edges of each node is greater than or equal to 2.
+ * If the graph is not Hamiltonian feasible, the function returns false.
+ * 
+ * @param graph The TSPGraph to check.
+ * @param originId The ID of the origin node.
+ * @return True if the graph is Hamiltonian feasible, false otherwise.
+ */
 bool Functionality::checkHamiltonianFeasibility(TSPGraph &graph, int originId) {
     graph.clearState();
 
