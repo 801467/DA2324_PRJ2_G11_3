@@ -14,8 +14,9 @@ public:
     static void backtracking(TSPGraph &graph);
     static void triangularInequality(TSPGraph &graph);
     static void nearestNeighbour(TSPGraph &graph);
-    static void backtrackedNearestNeighbour(TSPGraph &graph, int origin);
+    static void backtrackedNearestNeighbour(TSPGraph &graph, int originId, int destinationId);
     static bool checkHamiltonianFeasibility(TSPGraph &graph, int originId);
+    static void runClusteredGraphs(TSPGraph &graph, int originId);
 
 private:
     static void
@@ -28,7 +29,7 @@ private:
     static void
     tspBacktrackingNearestNeighbour(TSPGraph &graph, vector<bool> &visitedVector, Vertex<int> *currNode,
                                     vector<int> *currPath, int distance,
-                                    double cost);
+                                    double cost, Vertex<int> *destinationNode);
 };
 
 

@@ -307,7 +307,7 @@ chrono::time_point<chrono::system_clock> TerminalFlow::runNotConnectedFunctional
 
     // then run it
     auto start = chrono::system_clock::now();
-    Functionality::backtrackedNearestNeighbour(graph, origin);
+    Functionality::runClusteredGraphs(graph, origin);
 
     return start;
 }
