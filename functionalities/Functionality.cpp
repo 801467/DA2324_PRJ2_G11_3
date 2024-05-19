@@ -272,8 +272,11 @@ void Functionality::runClusteredGraphs(TSPGraph &graph, int originId) {
     graph.clearState();
     graph.setOrigin(originId);
 
+    // before clustering, sort by geographical position
+    graph.reorderByGeographicalPosition();
+
     auto clusters = generateClusters(graph);
-    cout << "Generated a total of " << clusters.size() << " clusters. Less than 150 nodes in each." << endl << endl;
+    cout << "Generated a total of " << clusters.size() << " clusters. Targeted less than 100 nodes." << endl << endl;
 
     double cost = 0;
     vector<int> path;
@@ -302,7 +305,7 @@ vector<TSPGraph> Functionality::generateClusters(TSPGraph &graph) {
     vector<TSPGraph> clusters;
 
     // Avoid unnecessary smaller clustering
-    if (graph.getVertexSet().size() < 150) {
+    if (graph.getVertexSet().size() < 101) {
         clusters.push_back(graph);
         return clusters;
     }
@@ -316,7 +319,7 @@ vector<TSPGraph> Functionality::generateClusters(TSPGraph &graph) {
     if (!isValidSubgraph(graph, graph1) || !isValidSubgraph(graph, graph2)) {
         int firstId = graph.getVertexSet().front()->getInfo();
         int lastId = graph.getVertexSet().back()->getInfo();
-        cout << "Rolled back to previous graph from " << firstId << " to " << lastId << endl;
+        cout << "Rolled back to previous graph from " << firstId << " to " << lastId << " (" << graph.getVertexSet().size() << " elements)" << endl;
 
         clusters.push_back(graph);
         return clusters;
@@ -372,7 +375,7 @@ bool Functionality::isValidSubgraph(TSPGraph &originalGraph, TSPGraph &subgraph)
     if (!validSubgraph) {
         int firstId = subgraph.getVertexSet().front()->getInfo();
         int lastId = subgraph.getVertexSet().back()->getInfo();
-        cout << "Unable to divide into smaller subgraph from " << firstId << " to " << lastId << endl;
+        cout << "Unable to divide into smaller subgraph from " << firstId << " to " << lastId << " (" << subgraph.getVertexSet().size() << " elements)" << endl;
     }
 
     return validSubgraph;

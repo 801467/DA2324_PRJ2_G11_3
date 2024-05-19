@@ -64,3 +64,18 @@ void TSPGraph::clearState() {
         v->setIncFlow(0);
     }
 }
+
+void TSPGraph::reorderByGeographicalPosition() {
+    // sort vertexSet
+    sort(vertexSet.begin(), vertexSet.end(), [](Vertex<int> *a, Vertex<int> *b) {
+        // distinguish opposite coordinates, by giving more weight to x-axis.
+        return (a->getLatitude() * 2) + a->getLongitude() < (b->getLatitude() * 2) + b->getLongitude();
+    });
+
+    // recreate map
+    vertexIndex.clear();
+    for(int i = 0; i < vertexSet.size(); i++){
+        auto v = vertexSet[i];
+        vertexIndex[v->getInfo()] = i;
+    }
+}

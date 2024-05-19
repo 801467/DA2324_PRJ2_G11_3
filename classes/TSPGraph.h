@@ -23,6 +23,7 @@ public:
     void setForceStop(bool shouldStop) { forceStop = std::move(shouldStop); };
     vector<vector<double>> getAdjacencyMatrix() const;
     void clearState();
+    void reorderByGeographicalPosition();
 };
 
 
